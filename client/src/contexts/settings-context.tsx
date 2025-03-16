@@ -93,10 +93,13 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<SettingsState>(initialState);
+  const [loading, setLoading] = useState(true);
   const { instanceId } = useIframeParams();
   const { toast } = useToast();
+
   useEffect(() => {
     console.log('URL Parameters at start of useEffect:', window.location.search);
+
     const loadSettings = async () => {
       console.log("Starting to load settings", instanceId);
       const userInstanceId = instanceId || 'default-instance-id'; // Set a default if null
@@ -104,21 +107,25 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         console.error("Instance ID is required");
         throw new Error('Instance ID is required');
       }
+
       try {
         const instanceToken = new URLSearchParams(window.location.search).get('token');
         console.log(`Fetching settings for instance ID: ${userInstanceId} with token: ${instanceToken}`);
-        setState(prevState => ({ ...prevState, isLoading: true, error: null }));
-        const settings = await fetchSettings(userInstanceId, instanceToken);
-        setState(prevState => ({
-          ...prevState,
-          settings: {
-            ...settings,
-            instanceId: userInstanceId
-          },
-          isLoading: false,
-          isDirty: false
-        }));
-        console.log(`Settings loaded successfully for instance: ${userInstanceId}`);
+
+        setTimeout(async () => {
+          const settings = await fetchSettings(userInstanceId, instanceToken);
+          setState(prevState => ({
+            ...prevState,
+            settings: {
+              ...settings,
+              instanceId: userInstanceId
+            },
+            isLoading: false,
+            isDirty: false
+          }));
+          setLoading(false);
+          console.log(`Settings loaded successfully for instance: ${userInstanceId}`);
+        }, 5000); // Wait for 5 seconds
       } catch (error) {
         console.error('Failed to load settings:', error);
         setState(prevState => ({
@@ -133,119 +140,16 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         });
       }
     };
+
     loadSettings();
   }, [instanceId, toast]);
-  // Update settings
-  const updateSettings = (updatedSettings: Partial<ShippingBarSettings>) => {
-    setState(prevState => ({
-      ...prevState,
-      settings: {
-        ...prevState.settings,
-        ...updatedSettings
-      },
-      isDirty: true
-    }));
-  };
 
-  // Save settings
-  const saveSettings = async () => {
-    setState(prevState => ({ ...prevState, isLoading: true, error: null }));
-    
-    try {
-      // Get token from URL params if available - would be provided by Wix when loaded in iframe
-      const instanceToken = new URLSearchParams(window.location.search).get('token');
-      
-      console.log(`Saving settings for instance: ${state.settings.instanceId}`);
-      
-      // Pass both settings and token to saveSettings API
-      const savedSettings = await apiSaveSettings(state.settings, instanceToken);
-      
-      setState(prevState => ({
-        ...prevState,
-        settings: savedSettings,
-        isLoading: false,
-        isDirty: false
-      }));
-      
-      toast({
-        title: 'Success',
-        description: 'Settings saved successfully.',
-      });
-      
-      console.log(`Settings saved successfully for instance: ${state.settings.instanceId}`);
-      return savedSettings;
-    } catch (error) {
-      console.error('Failed to save settings:', error);
-      
-      setState(prevState => ({
-        ...prevState,
-        isLoading: false,
-        error: 'Failed to save settings'
-      }));
-      
-      toast({
-        title: 'Error',
-        description: 'Failed to save settings. Please try again.',
-        variant: 'destructive',
-      });
-      
-      throw error;
-    }
-  };
-
-  // Update preview
-  const updatePreview = (updatedPreview: Partial<PreviewState>) => {
-    setState(prevState => ({
-      ...prevState,
-      preview: {
-        ...prevState.preview,
-        ...updatedPreview
-      }
-    }));
-  };
-
-  // Add product
-  const addProduct = (product: Product) => {
-    setState(prevState => {
-      // Check if product is already in the list
-      const exists = prevState.settings.recommendedProducts.some(p => p.id === product.id);
-      
-      if (exists) return prevState;
-      
-      return {
-        ...prevState,
-        settings: {
-          ...prevState.settings,
-          recommendedProducts: [...prevState.settings.recommendedProducts, product]
-        },
-        isDirty: true
-      };
-    });
-  };
-
-  // Remove product
-  const removeProduct = (productId: string) => {
-    setState(prevState => ({
-      ...prevState,
-      settings: {
-        ...prevState.settings,
-        recommendedProducts: prevState.settings.recommendedProducts.filter(p => p.id !== productId)
-      },
-      isDirty: true
-    }));
-  };
-
-  const value: SettingsContextType = {
-    state,
-    updateSettings,
-    saveSettings,
-    updatePreview,
-    addProduct,
-    removeProduct
-  };
+  if (loading) {
+    return <div>Loading...</div>; // Replace this with an actual loading animation or gif
+  }
 
   return (
-    <SettingsContext.Provider value={value}>
+    <SettingsContext.Provider value={{ state, updateSettings }}>
       {children}
     </SettingsContext.Provider>
   );
@@ -253,10 +157,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
 export const useSettings = (): SettingsContextType => {
   const context = useContext(SettingsContext);
-  
+
   if (context === undefined) {
     throw new Error('useSettings must be used within a SettingsProvider');
   }
-  
+
   return context;
 };
