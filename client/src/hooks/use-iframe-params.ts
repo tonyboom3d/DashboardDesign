@@ -64,7 +64,7 @@ export function useIframeParams(): IframeParams {
         instanceId = payload.instanceId;
         console.log('Extracted instanceId from JWT payload:', instanceId, 'Full payload:', payload);
       } else {
-        console.warn('Failed to extract instanceId from instance token');
+        console.warn('Failed to extract instanceId from instance token. Token provided:', instanceToken);
       }
     }
 

@@ -99,7 +99,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const loadSettings = async () => {
       // Use the instance from iframe params or fallback to default from config
-      const instanceId = instance || 'demo-instance';
+      // Use instanceId directly from parameters if available
+    const instanceId = instanceIdFromParams || 'demo-instance';
       
       try {
         // Get token from URL params if available - would be provided by Wix when loaded in iframe
