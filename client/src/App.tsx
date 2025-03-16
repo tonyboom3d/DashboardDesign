@@ -17,13 +17,20 @@ function WixApp({ children }: { children: React.ReactNode }) {
 
   // Log information about Wix environment
   useEffect(() => {
-    console.log("Wix Integration Status:", {
+    console.log("[DEBUG] Wix Integration Status:", {
       isInWix,
       instanceId,
       instance,
       locale,
       viewMode
     });
+    console.log("[DEBUG] Instance:", instance);
+    console.log("[DEBUG] InstanceId:", instanceId);
+    console.log("[DEBUG] Is in Wix:", isInWix);
+
+    // Log any URL parameters as well
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log("[DEBUG] URL parameters:", Object.fromEntries(urlParams.entries()));
 
     // Adjust iframe height when params are loaded
     adjustHeight();

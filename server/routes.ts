@@ -201,33 +201,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GET user settings - Used by Wix to fetch settings for a specific instance
   wixApiRouter.get("/get_userSettings", async (req: Request, res: Response) => {
     try {
+      // Debug logging for all parameters and sources
+      console.log(`[DEBUG][Wix API] get_userSettings endpoint hit`);
+      console.log(`[DEBUG][Wix API] Query parameters:`, req.query);
+      console.log(`[DEBUG][Wix API] Headers:`, req.headers);
+      console.log(`[DEBUG][Wix API] Body:`, req.body);
+      console.log(`[DEBUG][Wix API] JWT extracted instanceId:`, (req as any).instanceId);
+      
       // Get instance ID from multiple possible sources
-      // 1. From query parameters
-      // 2. From extracted JWT token (set by middleware)
-      // 3. From request body (for compatibility)
+      // 1. From query parameters (instanceId parameter)
+      // 2. From query parameters (instance parameter - Wix standard)
+      // 3. From extracted JWT token (set by middleware)
+      // 4. From request body (for compatibility)
       const instanceId = req.query.instanceId as string || 
+                         req.query.instance as string ||
                          (req as any).instanceId ||
                          req.body?.instanceId;
       
+      console.log(`[DEBUG][Wix API] Resolved instanceId: ${instanceId}`);
+      
       if (!instanceId) {
+        console.log(`[DEBUG][Wix API] Error: Instance ID is required but not found`);
         return res.status(400).json({ message: "Instance ID is required" });
       }
       
-      console.log(`[Wix API] Fetching settings for instance: ${instanceId}`);
+      console.log(`[DEBUG][Wix API] Fetching settings for instance: ${instanceId}`);
       
       // Get settings from storage
       let settings = await storage.getSettingsByInstanceId(instanceId);
+      console.log(`[DEBUG][Wix API] Storage returned settings:`, settings);
       
       // If settings don't exist, create default settings
       if (!settings) {
+        console.log(`[DEBUG][Wix API] No settings found, creating default settings`);
         const defaultSettings = {
           ...defaultShippingBarSettings,
           instanceId
         };
         
         settings = await storage.createSettings(defaultSettings);
+        console.log(`[DEBUG][Wix API] Created default settings:`, settings);
       }
       
+      console.log(`[DEBUG][Wix API] Returning settings:`, settings);
       return res.json(settings);
     } catch (error) {
       console.error("[Wix API] Error fetching settings:", error);

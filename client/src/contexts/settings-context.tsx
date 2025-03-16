@@ -98,18 +98,28 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Fetch settings when component mounts
   useEffect(() => {
     const loadSettings = async () => {
-      // Use provided instanceId prop or fallback to instance from iframe params or default
-      const effectiveInstanceId = props.instanceId || instance || 'demo-instance';
+      // Use provided instanceId prop or fallback to instanceId from iframe params or instance or default
+      const effectiveInstanceId = props?.instanceId || iframeParams.instanceId || iframeParams.instance || 'demo-instance';
+      
+      console.log(`[DEBUG] Loading settings with params:`, {
+        propsInstanceId: props?.instanceId,
+        iframeInstanceId: iframeParams.instanceId,
+        iframeInstance: iframeParams.instance,
+        effectiveInstanceId
+      });
       
       try {
         // Get token from URL params if available - would be provided by Wix when loaded in iframe
-        const instanceToken = new URLSearchParams(window.location.search).get('token');
+        const instanceToken = new URLSearchParams(window.location.search).get('token') || iframeParams.instance;
+        console.log(`[DEBUG] Using instance token: ${instanceToken ? 'provided' : 'not provided'}`);
         
         setState(prevState => ({ ...prevState, isLoading: true, error: null }));
-        console.log(`Loading settings for instance: ${effectiveInstanceId}`);
+        console.log(`[DEBUG] Loading settings for instance: ${effectiveInstanceId}`);
         
         // Pass both instanceId and token to fetchSettings
         const settings = await fetchSettings(effectiveInstanceId, instanceToken);
+        
+        console.log(`[DEBUG] Settings fetched:`, settings);
         
         setState(prevState => ({
           ...prevState,
@@ -121,7 +131,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           isDirty: false
         }));
         
-        console.log(`Settings loaded successfully for instance: ${effectiveInstanceId}`);
+        console.log(`[DEBUG] Settings loaded successfully for instance: ${effectiveInstanceId}`);
       } catch (error) {
         console.error('Failed to load settings:', error);
         setState(prevState => ({
