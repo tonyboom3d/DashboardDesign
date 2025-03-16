@@ -1,0 +1,126 @@
+import React from 'react';
+import { cn } from '@/lib/utils';
+import { Progress } from '@/components/ui/progress';
+import { ShippingBarSettings, PreviewState } from '@/types/settings';
+
+interface ProgressBarPreviewProps {
+  settings: ShippingBarSettings;
+  previewState: PreviewState;
+  className?: string;
+}
+
+export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
+  settings,
+  previewState,
+  className
+}) => {
+  const { currentCartValue } = previewState;
+  const { threshold, enabled, colors, barStyle, text, textAlignment, textDirection, icon, position } = settings;
+  
+  // Calculate progress percentage
+  const progressPercentage = Math.min(Math.floor((currentCartValue / threshold) * 100), 100);
+  
+  // Calculate remaining amount for free shipping
+  const remainingAmount = Math.max(threshold - currentCartValue, 0);
+  const remainingFormatted = (remainingAmount / 100).toFixed(2);
+  
+  // Format the bar text with the remaining amount
+  const formattedBarText = text.barText.replace('${remaining}', `$${remainingFormatted}`);
+  
+  // Determine if the threshold has been reached
+  const thresholdReached = currentCartValue >= threshold;
+  
+  // If the bar is disabled, don't render anything
+  if (!enabled) return null;
+  
+  // Define the component to render based on whether the threshold has been reached
+  const contentToRender = thresholdReached ? (
+    <div 
+      className={cn(
+        "p-3 text-sm text-center",
+        position === 'top' ? 'border-b' : 'border-t',
+        textDirection === 'rtl' ? 'rtl' : 'ltr'
+      )}
+      style={{ 
+        backgroundColor: colors.accent + '20', // Light version of accent color
+        borderColor: colors.accent,
+        color: colors.accent,
+        textAlign: textAlignment
+      }}
+    >
+      {text.successText}
+    </div>
+  ) : (
+    <div className="p-3 text-sm">
+      <div 
+        className={cn(
+          "flex items-center mb-2",
+          textAlignment === 'center' && "justify-center",
+          textAlignment === 'right' && "justify-end",
+          textDirection === 'rtl' ? 'rtl' : 'ltr'
+        )}
+        style={{ color: colors.text }}
+      >
+        {icon.type === 'emoji' && icon.position === 'before' && <span className="mr-2">{icon.selection}</span>}
+        <span>
+          <span className="text-sm">{formattedBarText.split('$' + remainingFormatted)[0]}</span>
+          <span className="font-medium" style={{ color: colors.highlight }}>${remainingFormatted}</span>
+          <span className="text-sm">{formattedBarText.split('$' + remainingFormatted)[1]}</span>
+        </span>
+        {icon.type === 'emoji' && icon.position === 'after' && <span className="ml-2">{icon.selection}</span>}
+      </div>
+      
+      <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: colors.progressBg }}>
+        <div 
+          className="h-full rounded-full transition-all duration-300"
+          style={{ 
+            width: `${progressPercentage}%`,
+            backgroundColor: barStyle === 'simple' ? colors.bar : `linear-gradient(to right, ${colors.bar}, ${colors.highlight})`,
+          }}
+        />
+      </div>
+      
+      {settings.recommendedProducts.length > 0 && (
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          {settings.recommendedProducts.slice(0, 2).map(product => (
+            <div key={product.id} className="border rounded-md p-2 flex items-center space-x-2" style={{ borderColor: colors.border.color }}>
+              <img src={product.imageUrl} alt={product.name} className="h-10 w-10 object-cover rounded" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium truncate" style={{ color: colors.text }}>{product.name}</p>
+                <p className="text-xs text-gray-500">${(product.price / 100).toFixed(2)}</p>
+              </div>
+              <button 
+                type="button" 
+                className="px-2 py-1 text-xs font-medium rounded"
+                style={{ 
+                  backgroundColor: colors.accent + '20',
+                  color: colors.accent
+                }}
+              >
+                {text.buttonText}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+  
+  return (
+    <div 
+      className={cn(
+        "overflow-hidden",
+        className
+      )}
+      style={{ 
+        backgroundColor: colors.background,
+        borderWidth: `${settings.border.thickness}px`,
+        borderStyle: 'solid',
+        borderColor: settings.border.color,
+        borderRadius: '0.375rem'
+      }}
+    >
+      {contentToRender}
+    </div>
+  );
+};
