@@ -92,13 +92,7 @@ const Dashboard: React.FC = () => {
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-blue-800">Wix Integration Active</h3>
                 <div className="mt-2 text-sm text-blue-700">
-                  <p>Your changes will be saved to your Wix site. Currently editing instance: <span className="font-medium">{instance || 'demo-instance'}</span></p>
-                  {locale && (
-                    <p className="mt-1">Locale: <span className="font-medium">{locale}</span></p>
-                  )}
-                  {viewMode && (
-                    <p className="mt-1">View mode: <span className="font-medium">{viewMode}</span></p>
-                  )}
+                  <p>Your changes will be saved to your Wix site.</p>
                 </div>
               </div>
             </div>
