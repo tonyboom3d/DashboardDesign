@@ -30,28 +30,63 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
   // Determine if the threshold has been reached
   const thresholdReached = currentCartValue >= threshold;
   
-  // If the bar is disabled, don't render anything
-  if (!enabled) return null;
+  // If the bar is disabled, render a disabled message (for preview only)
+  if (!enabled) {
+    return (
+      <div 
+        className={cn(
+          "p-4 text-center border-2 border-red-300 bg-red-50 text-red-600 rounded-md",
+          className
+        )}
+      >
+        <div className="font-medium mb-1">Free Shipping Bar is currently disabled</div>
+        <div className="text-sm">Enable it in General Settings to make it visible to your customers</div>
+      </div>
+    );
+  }
   
-  // Define the component to render based on whether the threshold has been reached
-  const contentToRender = thresholdReached ? (
-    <div 
-      className={cn(
-        "p-3 text-sm text-center",
-        position === 'top' ? 'border-b' : 'border-t',
-        textDirection === 'rtl' ? 'rtl' : 'ltr'
-      )}
-      style={{ 
-        backgroundColor: colors.accent + '20', // Light version of accent color
-        borderColor: colors.accent,
-        color: colors.accent,
-        textAlign: textAlignment
-      }}
-    >
-      {text.successText}
-    </div>
-  ) : (
-    <div className="p-3 text-sm">
+  // Define the component to render based on context
+  let messageContent;
+  
+  if (thresholdReached) {
+    // Success message when threshold is reached
+    messageContent = (
+      <div 
+        className={cn(
+          "p-3 text-sm text-center",
+          position === 'top' ? 'border-b' : 'border-t',
+          textDirection === 'rtl' ? 'rtl' : 'ltr'
+        )}
+        style={{ 
+          backgroundColor: colors.accent + '20', // Light version of accent color
+          borderColor: colors.accent,
+          color: colors.accent,
+          textAlign: textAlignment
+        }}
+      >
+        {text.successText}
+      </div>
+    );
+  } else if (currentCartValue === 0 && text.showInitialText) {
+    // Initial message when cart is empty and showInitialText is enabled
+    messageContent = (
+      <div 
+        className={cn(
+          "flex items-center mb-2",
+          textAlignment === 'center' && "justify-center",
+          textAlignment === 'right' && "justify-end",
+          textDirection === 'rtl' ? 'rtl' : 'ltr'
+        )}
+        style={{ color: colors.text }}
+      >
+        {icon.type === 'emoji' && icon.position === 'before' && <span className="mr-2">{icon.selection}</span>}
+        <span>{text.initialText}</span>
+        {icon.type === 'emoji' && icon.position === 'after' && <span className="ml-2">{icon.selection}</span>}
+      </div>
+    );
+  } else {
+    // Regular progress message
+    messageContent = (
       <div 
         className={cn(
           "flex items-center mb-2",
@@ -69,6 +104,14 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
         </span>
         {icon.type === 'emoji' && icon.position === 'after' && <span className="ml-2">{icon.selection}</span>}
       </div>
+    );
+  }
+  
+  const contentToRender = thresholdReached ? (
+    messageContent
+  ) : (
+    <div className="p-3 text-sm">
+      {messageContent}
       
       <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: colors.progressBg }}>
         <div 
@@ -83,7 +126,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
       {settings.recommendedProducts.length > 0 && (
         <div className="mt-3 grid grid-cols-2 gap-2">
           {settings.recommendedProducts.slice(0, 2).map(product => (
-            <div key={product.id} className="border rounded-md p-2 flex items-center space-x-2" style={{ borderColor: colors.border.color }}>
+            <div key={product.id} className="border rounded-md p-2 flex items-center space-x-2" style={{ borderColor: settings.border.color }}>
               <img src={product.imageUrl} alt={product.name} className="h-10 w-10 object-cover rounded" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium truncate" style={{ color: colors.text }}>{product.name}</p>

@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 // Default settings
 const defaultSettings: ShippingBarSettings = {
   instanceId: 'demo-instance',
-  enabled: true,
+  enabled: false,
   threshold: 5000, // $50.00 in cents
   productSuggestionMethod: 'manual',
   barStyle: 'simple',
@@ -26,7 +26,9 @@ const defaultSettings: ShippingBarSettings = {
   text: {
     barText: "Add ${remaining} more to get FREE shipping!",
     successText: "🎉 Congratulations! You've qualified for FREE shipping!",
-    buttonText: "Add to Cart"
+    buttonText: "Add to Cart",
+    initialText: "Add items to your cart and get free shipping at $50.00!",
+    showInitialText: true
   },
   textAlignment: 'left',
   textDirection: 'ltr',

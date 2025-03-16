@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { 
   AlignLeft,
   AlignCenter,
@@ -12,6 +13,12 @@ import {
 } from 'lucide-react';
 import { useSettings } from '@/hooks/use-settings';
 import { cn } from '@/lib/utils';
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 export const CustomizationCard: React.FC = () => {
   const { state, updateSettings } = useSettings();
@@ -137,8 +144,8 @@ export const CustomizationCard: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="backgroundColor" className="block text-sm font-medium text-gray-700 mb-1">Background Color</Label>
-                <div className="flex items-center">
-                  <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
+                <div className="flex items-center space-x-2">
+                  <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden">
                     <Input 
                       type="color" 
                       id="backgroundColor" 
@@ -152,7 +159,24 @@ export const CustomizationCard: React.FC = () => {
                     value={settings.colors.background}
                     onChange={(e) => updateColor('background', e.target.value)}
                     className="block w-full py-1.5 px-3 text-sm"
+                    placeholder="#FFFFFF"
                   />
+                </div>
+                
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {["#FFFFFF", "#F9FAFB", "#F3F4F6", "#E5E7EB", "#D1D5DB"].map(color => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={cn(
+                        "w-6 h-6 rounded-md border",
+                        settings.colors.background === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                      )}
+                      style={{ backgroundColor: color }}
+                      onClick={() => updateColor('background', color)}
+                      title={color}
+                    />
+                  ))}
                 </div>
               </div>
               
@@ -328,6 +352,33 @@ export const CustomizationCard: React.FC = () => {
                 onChange={(e) => updateText('successText', e.target.value)}
                 className="block w-full"
               />
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="initialText" className="block text-sm font-medium text-gray-700">Initial Text</Label>
+                <Switch 
+                  id="showInitialText" 
+                  checked={settings.text.showInitialText}
+                  onCheckedChange={(checked) => {
+                    updateSettings({
+                      text: {
+                        ...settings.text,
+                        showInitialText: checked
+                      }
+                    });
+                  }}
+                />
+              </div>
+              <Input 
+                id="initialText" 
+                type="text" 
+                value={settings.text.initialText}
+                onChange={(e) => updateText('initialText', e.target.value)}
+                className="block w-full"
+                disabled={!settings.text.showInitialText}
+              />
+              <p className="mt-1 text-xs text-gray-500">This text will be shown when the cart is empty.</p>
             </div>
             
             <div>
