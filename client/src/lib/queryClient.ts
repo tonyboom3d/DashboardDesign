@@ -22,31 +22,17 @@ export async function apiRequest(
   // Add authorization header if instance token is provided
   if (instanceToken) {
     headers["Authorization"] = `Instance ${instanceToken}`;
-    console.log(`[DEBUG] Adding authorization header with token`);
-  } else {
-    console.log(`[DEBUG] No instance token provided for authorization`);
   }
 
   // Build the full URL if a base URL is provided
   const fullUrl = baseUrl ? `${baseUrl}${url}` : url;
-  console.log(`[DEBUG] Making ${method} request to: ${fullUrl}`);
   
-  const requestOptions: RequestInit = {
+  const res = await fetch(fullUrl, {
     method,
     headers,
+    body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
-  };
-  
-  // Only add body for non-GET requests
-  if (data && method !== 'GET') {
-    requestOptions.body = JSON.stringify(data);
-    console.log(`[DEBUG] Request body:`, data);
-  }
-  
-  console.log(`[DEBUG] Request options:`, requestOptions);
-  
-  const res = await fetch(fullUrl, requestOptions);
-  console.log(`[DEBUG] Response status:`, res.status, res.statusText);
+  });
 
   await throwIfResNotOk(res);
   return res;
