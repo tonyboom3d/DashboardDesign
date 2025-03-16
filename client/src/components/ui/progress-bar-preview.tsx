@@ -119,6 +119,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
           style={{ 
             width: `${progressPercentage}%`,
             backgroundColor: barStyle === 'simple' ? colors.bar : `linear-gradient(to right, ${colors.bar}, ${colors.highlight})`,
+            border: settings.border.thickness > 0 ? `${settings.border.thickness}px solid ${settings.border.color}` : 'none'
           }}
         />
       </div>

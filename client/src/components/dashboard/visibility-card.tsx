@@ -53,7 +53,7 @@ export const VisibilityCard: React.FC = () => {
               <div className="flex items-center justify-between w-full pr-4">
                 <div className="flex items-center gap-2">
                   <Eye className="h-5 w-5 text-gray-500" />
-                  <h3 className="text-lg font-medium text-gray-900">נראות ומיקום</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Visibility & Placement</h3>
                 </div>
               </div>
             </AccordionTrigger>
@@ -61,16 +61,16 @@ export const VisibilityCard: React.FC = () => {
             <AccordionContent className="pt-2 pb-4 space-y-6">
               {/* Visibility Toggles */}
               <div className="space-y-4">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">הצג ב-</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Show On</h3>
                 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <Package className="h-5 w-5 text-gray-500 ml-2" />
-                      <span className="text-sm font-medium text-gray-700">דף מוצר</span>
+                      <Package className="h-5 w-5 text-gray-500 mr-2" />
+                      <span className="text-sm font-medium text-gray-700">Product Page</span>
                     </div>
                     <div className="flex items-center">
-                      <div className="relative inline-block w-8 align-middle select-none ml-2">
+                      <div className="relative inline-block w-8 align-middle select-none mr-2">
                         <Switch 
                           id="productPageDesktop"
                           checked={settings.visibility.productPage.desktop}
@@ -78,9 +78,9 @@ export const VisibilityCard: React.FC = () => {
                           className="w-8 h-4"
                         />
                       </div>
-                      <span className="text-xs text-gray-500 ml-3">מחשב</span>
+                      <span className="text-xs text-gray-500 mr-3">Desktop</span>
                       
-                      <div className="relative inline-block w-8 align-middle select-none ml-2">
+                      <div className="relative inline-block w-8 align-middle select-none mr-2">
                         <Switch 
                           id="productPageMobile"
                           checked={settings.visibility.productPage.mobile}
@@ -88,17 +88,17 @@ export const VisibilityCard: React.FC = () => {
                           className="w-8 h-4"
                         />
                       </div>
-                      <span className="text-xs text-gray-500">נייד</span>
+                      <span className="text-xs text-gray-500">Mobile</span>
                     </div>
                   </div>
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <ShoppingCart className="h-5 w-5 text-gray-500 ml-2" />
-                      <span className="text-sm font-medium text-gray-700">דף עגלה</span>
+                      <ShoppingCart className="h-5 w-5 text-gray-500 mr-2" />
+                      <span className="text-sm font-medium text-gray-700">Cart Page</span>
                     </div>
                     <div className="flex items-center">
-                      <div className="relative inline-block w-8 align-middle select-none ml-2">
+                      <div className="relative inline-block w-8 align-middle select-none mr-2">
                         <Switch 
                           id="cartPageDesktop"
                           checked={settings.visibility.cartPage.desktop}
@@ -106,9 +106,9 @@ export const VisibilityCard: React.FC = () => {
                           className="w-8 h-4"
                         />
                       </div>
-                      <span className="text-xs text-gray-500 ml-3">מחשב</span>
+                      <span className="text-xs text-gray-500 mr-3">Desktop</span>
                       
-                      <div className="relative inline-block w-8 align-middle select-none ml-2">
+                      <div className="relative inline-block w-8 align-middle select-none mr-2">
                         <Switch 
                           id="cartPageMobile"
                           checked={settings.visibility.cartPage.mobile}
@@ -116,17 +116,17 @@ export const VisibilityCard: React.FC = () => {
                           className="w-8 h-4"
                         />
                       </div>
-                      <span className="text-xs text-gray-500">נייד</span>
+                      <span className="text-xs text-gray-500">Mobile</span>
                     </div>
                   </div>
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <Layers className="h-5 w-5 text-gray-500 ml-2" />
-                      <span className="text-sm font-medium text-gray-700">עגלה מיני</span>
+                      <Layers className="h-5 w-5 text-gray-500 mr-2" />
+                      <span className="text-sm font-medium text-gray-700">Mini Cart</span>
                     </div>
                     <div className="flex items-center">
-                      <div className="relative inline-block w-8 align-middle select-none ml-2">
+                      <div className="relative inline-block w-8 align-middle select-none mr-2">
                         <Switch 
                           id="miniCartDesktop"
                           checked={settings.visibility.miniCart.desktop}
@@ -134,9 +134,9 @@ export const VisibilityCard: React.FC = () => {
                           className="w-8 h-4"
                         />
                       </div>
-                      <span className="text-xs text-gray-500 ml-3">מחשב</span>
+                      <span className="text-xs text-gray-500 mr-3">Desktop</span>
                       
-                      <div className="relative inline-block w-8 align-middle select-none ml-2">
+                      <div className="relative inline-block w-8 align-middle select-none mr-2">
                         <Switch 
                           id="miniCartMobile"
                           checked={settings.visibility.miniCart.mobile}
@@ -144,17 +144,17 @@ export const VisibilityCard: React.FC = () => {
                           className="w-8 h-4"
                         />
                       </div>
-                      <span className="text-xs text-gray-500">נייד</span>
+                      <span className="text-xs text-gray-500">Mobile</span>
                     </div>
                   </div>
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <Activity className="h-5 w-5 text-gray-500 ml-2" />
-                      <span className="text-sm font-medium text-gray-700">כותרת</span>
+                      <Activity className="h-5 w-5 text-gray-500 mr-2" />
+                      <span className="text-sm font-medium text-gray-700">Header</span>
                     </div>
                     <div className="flex items-center">
-                      <div className="relative inline-block w-8 align-middle select-none ml-2">
+                      <div className="relative inline-block w-8 align-middle select-none mr-2">
                         <Switch 
                           id="headerDesktop"
                           checked={settings.visibility.header.desktop}
@@ -162,9 +162,9 @@ export const VisibilityCard: React.FC = () => {
                           className="w-8 h-4"
                         />
                       </div>
-                      <span className="text-xs text-gray-500 ml-3">מחשב</span>
+                      <span className="text-xs text-gray-500 mr-3">Desktop</span>
                       
-                      <div className="relative inline-block w-8 align-middle select-none ml-2">
+                      <div className="relative inline-block w-8 align-middle select-none mr-2">
                         <Switch 
                           id="headerMobile"
                           checked={settings.visibility.header.mobile}
@@ -172,7 +172,7 @@ export const VisibilityCard: React.FC = () => {
                           className="w-8 h-4"
                         />
                       </div>
-                      <span className="text-xs text-gray-500">נייד</span>
+                      <span className="text-xs text-gray-500">Mobile</span>
                     </div>
                   </div>
                 </div>
@@ -180,29 +180,29 @@ export const VisibilityCard: React.FC = () => {
               
               {/* Position */}
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">מיקום</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Position</h3>
                 <div className="inline-flex items-center rounded-md shadow-sm">
                   <Button
                     variant="outline"
                     type="button"
                     onClick={() => setPosition('top')}
                     className={cn(
-                      "px-4 py-2 rounded-r-md",
+                      "px-4 py-2 rounded-l-md",
                       settings.position === 'top' && "bg-primary-50 border-primary-500 text-primary-500"
                     )}
                   >
-                    למעלה
+                    Top
                   </Button>
                   <Button
                     variant="outline"
                     type="button"
                     onClick={() => setPosition('bottom')}
                     className={cn(
-                      "px-4 py-2 rounded-l-md",
+                      "px-4 py-2 rounded-r-md",
                       settings.position === 'bottom' && "bg-primary-50 border-primary-500 text-primary-500"
                     )}
                   >
-                    למטה
+                    Bottom
                   </Button>
                 </div>
               </div>

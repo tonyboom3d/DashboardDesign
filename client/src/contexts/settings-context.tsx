@@ -44,7 +44,26 @@ const defaultSettings: ShippingBarSettings = {
     header: { desktop: false, mobile: false }
   },
   position: 'top',
-  recommendedProducts: [],
+  recommendedProducts: [
+    {
+      id: '1',
+      name: 'Premium T-Shirt',
+      price: 2999, // $29.99
+      imageUrl: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=100&h=100&fit=crop&auto=format'
+    },
+    {
+      id: '2',
+      name: 'Travel Mug',
+      price: 1899, // $18.99
+      imageUrl: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=100&h=100&fit=crop&auto=format'
+    },
+    {
+      id: '3',
+      name: 'Leather Wallet',
+      price: 3499, // $34.99
+      imageUrl: 'https://images.unsplash.com/photo-1604026053328-7fca346fcb26?w=100&h=100&fit=crop&auto=format'
+    }
+  ],
   analytics: {
     viewCount: 3742,
     conversionRate: '24.8%',
