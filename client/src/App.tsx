@@ -13,21 +13,19 @@ import { useIframeParams } from "@/hooks/use-iframe-params";
 function WixApp({ children }: { children: React.ReactNode }) {
   // Initialize Wix iframe communication
   const { adjustHeight, isInWix } = useWixIframe();
-  const { instanceId, instance, locale, viewMode } = useIframeParams();
+  const { instanceId } = useIframeParams();
 
   // Log information about Wix environment
   useEffect(() => {
     console.log("Wix Integration Status:", {
       isInWix,
       instanceId,
-      instance,
-      locale,
-      viewMode
+   
     });
 
     // Adjust iframe height when params are loaded
     adjustHeight();
-  }, [isInWix, instanceId, instance, locale, viewMode, adjustHeight]);
+  }, [isInWix, instanceId, adjustHeight]);
 
   // Return children wrapped with any Wix-specific context or components
   return <>{children}</>;

@@ -103,35 +103,29 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const loadSettings = async () => {
       console.log("Starting to load settings", instanceId);
 
-      // Stop the call if instanceId is not available.
       if (!instanceId) {
         console.error("Instance ID is required but not found");
         return;
       }
-      const userInstanceId = instanceId;
-      if (!userInstanceId) {
-        console.error("Instance ID is required");
-        throw new Error('Instance ID is required');
-      }
 
       try {
         const instanceToken = new URLSearchParams(window.location.search).get('token');
-        console.log(`Fetching settings for instance ID: ${userInstanceId} with token: ${instanceToken}`);
+        console.log(`Fetching settings for instance ID: ${instanceId} with token: ${instanceToken}`);
 
         setTimeout(async () => {
-          const settings = await fetchSettings(userInstanceId, instanceToken);
+          const settings = await fetchSettings(instanceId, instanceToken);
           setState(prevState => ({
             ...prevState,
             settings: {
               ...settings,
-              instanceId: userInstanceId
+              instanceId
             },
             isLoading: false,
             isDirty: false
           }));
           setLoading(false);
-          console.log(`Settings loaded successfully for instance: ${userInstanceId}`);
-        }, 5000); // Wait for 5 seconds
+          console.log(`Settings loaded successfully for instance: ${instanceId}`);
+        }, 3000);
       } catch (error) {
         console.error('Failed to load settings:', error);
         setState(prevState => ({
@@ -158,12 +152,24 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
   }, [instanceId, toast]);
 
+  // Define the missing updateSettings function
+  const updateSettings = (newSettings: Partial<ShippingBarSettings>) => {
+    setState(prevState => ({
+      ...prevState,
+      settings: {
+        ...prevState.settings,
+        ...newSettings,
+      },
+      isDirty: true
+    }));
+  };
+
   if (loading) {
-    return <div>Loading...</div>; // Replace this with an actual loading animation or gif
+    return <div>Loading...</div>;
   }
 
   return (
-    <SettingsContext.Provider value={{ state, updateSettings }}>
+      <SettingsContext.Provider value={{ state, updateSettings }}>
       {children}
     </SettingsContext.Provider>
   );
