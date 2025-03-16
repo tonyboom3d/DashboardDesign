@@ -1,8 +1,9 @@
+
 // Configuration settings for Wix integration
 
 export const WIX_CONFIG = {
   // Base URL for Wix backend API
-  API_BASE_URL: import.meta.env.VITE_WIX_API_URL || '',
+  API_BASE_URL: import.meta.env.VITE_WIX_API_URL || 'https://your-repl-name.your-username.repl.co/wix/api',
   
   // API endpoints
   ENDPOINTS: {
@@ -18,7 +19,8 @@ export const WIX_CONFIG = {
   CORS: {
     ALLOWED_ORIGINS: [
       'https://manage.wix.com',
-      'https://editor.wix.com'
+      'https://editor.wix.com',
+      'https://www.wix.com'
     ]
   }
 };
