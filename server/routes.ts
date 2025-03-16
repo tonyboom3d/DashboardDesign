@@ -201,6 +201,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GET user settings - Used by Wix to fetch settings for a specific instance
   wixApiRouter.get("/get_userSettings", async (req: Request, res: Response) => {
     try {
+      // Log all possible sources for debugging
+      console.log('[Wix API] Request sources for instanceId:');
+      console.log('- Query params:', req.query);
+      console.log('- Headers:', req.headers);
+      console.log('- JWT extracted:', (req as any).instanceId);
+      
       // Get instance ID from multiple possible sources
       // 1. From query parameters
       // 2. From extracted JWT token (set by middleware)
@@ -210,6 +216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                          req.body?.instanceId;
       
       if (!instanceId) {
+        console.log('[Wix API] No instanceId found, returning 400');
         return res.status(400).json({ message: "Instance ID is required" });
       }
       

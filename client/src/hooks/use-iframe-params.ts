@@ -1,71 +1,50 @@
-import { useEffect, useState } from 'react';
 
-interface IframeParams {
-  instance: string | null;
-  instanceId: string | null; // Extracted instanceId from JWT
-  locale: string | null;
-  viewMode: string | null;
-  siteUrl: string | null;
-  token: string | null;
-  authorizationCode: string | null;
-  [key: string]: string | null;
-}
+import { useState, useEffect } from 'react';
+import { IframeParams, WixAuthParams } from '@/types/wix-iframe';
 
 /**
- * Extract all URL parameters from the current window location
+ * Extract URL parameters from current location
  */
 function getUrlParams(): Record<string, string> {
-  // Get URL parameters
-  const params = new URLSearchParams(window.location.search);
-  const result: Record<string, string> = {};
+  const params: Record<string, string> = {};
+  const queryString = window.location.search.substring(1);
   
-  // Convert parameters to object using forEach (compatible with all TS targets)
-  params.forEach((value, key) => {
-    result[key] = value;
-  });
+  if (queryString) {
+    const pairs = queryString.split('&');
+    for (const pair of pairs) {
+      const [key, value] = pair.split('=');
+      params[decodeURIComponent(key)] = decodeURIComponent(value || '');
+    }
+  }
   
-  return result;
+  return params;
 }
 
 /**
- * Parse Wix instance JWT token to extract instanceId
- * Format is base64-encoded payload with instanceId inside
+ * Parse Wix instance token to extract instanceId
+ * Wix token is typically in format: header.payload.signature
  */
-function parseInstanceToken(instanceToken: string): string | null {
+function parseInstanceToken(token: string): string | null {
+  console.log('Parsing instance token:', token);
+  
   try {
-    // The token format seems to be: base64Data.payload.signature
-    // We need to extract the instanceId from the payload
-    const parts = instanceToken.split('.');
-    
-    if (parts.length > 0) {
-      try {
-        // First try to parse as JWT (if it contains instanceId directly)
+    // Check if this is a JWT token (has dots)
+    if (token.includes('.')) {
+      // For simple JWT format extraction (without validation)
+      const parts = token.split('.');
+      if (parts.length > 1) {
         const payload = JSON.parse(atob(parts[1]));
-        if (payload && payload.instanceId) {
-          return payload.instanceId;
-        }
-      } catch (e) {
-        // If JSON parsing fails, try to decode as base64 string
-        if (parts[0].includes('instanceId')) {
-          // Try to extract instanceId from the decoded token
-          const decodedToken = atob(parts[0]);
-          const match = decodedToken.match(/"instanceId"\s*:\s*"([^"]+)"/);
-          if (match && match[1]) {
-            return match[1];
-          }
-        }
+        console.log('Extracted payload from JWT:', payload);
+        
+        // Different possible locations for instanceId in the token
+        return payload.instanceId || 
+               (payload.data && payload.data.instanceId) || 
+               null;
       }
     }
     
-    // Check if token contains instanceId directly
-    if (instanceToken.includes('instanceId')) {
-      const match = instanceToken.match(/instanceId":"([^"]+)"/);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-    
-    console.warn('Failed to extract instanceId from token:', instanceToken);
+    // For some Wix tokens, the instanceId might be directly encoded in the token
+    // or have a different structure
     return null;
   } catch (error) {
     console.error('Error parsing instance token:', error);
@@ -74,28 +53,41 @@ function parseInstanceToken(instanceToken: string): string | null {
 }
 
 /**
- * Parse Wix authorization code to extract the instanceId if available
+ * Parse Wix authorization code to extract instanceId
  */
-function parseAuthorizationCode(authCode: string): string | null {
+function parseAuthorizationCode(code: string): string | null {
+  console.log('Parsing authorization code:', code);
+  
   try {
-    if (!authCode || !authCode.startsWith('JWS.')) return null;
-    
-    const parts = authCode.split('.');
-    if (parts.length !== 4) return null; // JWS.header.payload.signature format
-    
-    // Parse the payload
-    const payload = JSON.parse(atob(parts[2]));
-    
-    // Extract the data part which is a stringified JSON
-    if (payload.data) {
-      const data = JSON.parse(payload.data);
-      
-      // Get instanceId from decodedToken
-      if (data.decodedToken && data.decodedToken.instanceId) {
-        return data.decodedToken.instanceId;
+    // Some Wix integrations provide instanceId in the authorization code
+    if (code.startsWith('JWS.')) {
+      const parts = code.split('.');
+      if (parts.length > 2) {
+        try {
+          const payload = JSON.parse(atob(parts[1]));
+          console.log('Extracted payload from authorization code:', payload);
+          
+          // Look for instanceId in various locations in the payload
+          if (payload.data) {
+            const data = typeof payload.data === 'string' 
+              ? JSON.parse(payload.data) 
+              : payload.data;
+              
+            console.log('Parsed data from authorization code payload:', data);
+            
+            // Check different possible locations for instanceId
+            if (data.decodedToken && data.decodedToken.siteId) {
+              return data.decodedToken.siteId;
+            }
+            
+            // Look for other possible locations
+            return null;
+          }
+        } catch (e) {
+          console.error('Error parsing JWT payload:', e);
+        }
       }
     }
-    
     return null;
   } catch (error) {
     console.error('Error parsing authorization code:', error);
@@ -120,6 +112,8 @@ export function useIframeParams(): IframeParams {
   
   useEffect(() => {
     const urlParams = getUrlParams();
+    console.log('URL Parameters:', urlParams);
+    
     const instanceToken = urlParams.instance || null;
     const authCode = urlParams.authorizationCode || null;
     
@@ -128,12 +122,19 @@ export function useIframeParams(): IframeParams {
     
     // First try from instance token
     if (instanceToken) {
+      console.log('Trying to extract instanceId from instance token');
       instanceId = parseInstanceToken(instanceToken);
     }
     
     // If not found, try from authorization code
     if (!instanceId && authCode) {
+      console.log('Trying to extract instanceId from authorization code');
       instanceId = parseAuthorizationCode(authCode);
+    }
+    
+    // Log the raw instance token for debugging
+    if (instanceToken) {
+      console.log('Raw instance token:', instanceToken);
     }
     
     setParams({
