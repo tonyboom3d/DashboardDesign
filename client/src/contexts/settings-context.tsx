@@ -102,7 +102,13 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     const loadSettings = async () => {
       console.log("Starting to load settings", instanceId);
-      const userInstanceId = instanceId || 'default-instance-id'; // Set a default if null
+
+      // Stop the call if instanceId is not available.
+      if (!instanceId) {
+        console.error("Instance ID is required but not found");
+        return;
+      }
+      const userInstanceId = instanceId;
       if (!userInstanceId) {
         console.error("Instance ID is required");
         throw new Error('Instance ID is required');
@@ -141,7 +147,15 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
     };
 
-    loadSettings();
+    let didCancel = false;
+
+    if (!didCancel) {
+      loadSettings();
+    }
+
+    return () => {
+      didCancel = true;
+    };
   }, [instanceId, toast]);
 
   if (loading) {
