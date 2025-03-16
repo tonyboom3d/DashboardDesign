@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 
 // Default settings
 const defaultSettings: ShippingBarSettings = {
-  instanceId: 'demo-instance',
+  instanceId: '',
   enabled: false,
   threshold: 5000, // $50.00 in cents
   productSuggestionMethod: 'manual',
@@ -99,7 +99,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const loadSettings = async () => {
       // Use the instanceId from iframe params or fallback to default from config
-      const userInstanceId = instanceId || 'demo-instance';
+      const userInstanceId = instanceId;
+      if (!userInstanceId) {
+        throw new Error('Instance ID is required');
+      }
 
       try {
         // Get token from URL params if available - would be provided by Wix when loaded in iframe
