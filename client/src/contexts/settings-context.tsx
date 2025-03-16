@@ -180,7 +180,7 @@ const updateSettings = (newSettings: Partial<ShippingBarSettings>) => {
   }
 
   return (
-      <SettingsContext.Provider value={{ state, updateSettings }}>
+      <SettingsContext.Provider value={{ state, updateSettings, saveSettings }}>
       {children}
     </SettingsContext.Provider>
   );

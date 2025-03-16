@@ -85,7 +85,7 @@ export interface SettingsState {
 
 export type SettingsContextType = {
   state: SettingsState;
-  updateSettings: (settings: Partial<ShippingBarSettings>) => void;
+  updateSettings: (newSettings: Partial<ShippingBarSettings>) => void;
   saveSettings: () => Promise<ShippingBarSettings>;
   updatePreview: (preview: Partial<PreviewState>) => void;
   addProduct: (product: Product) => void;
