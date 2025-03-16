@@ -10,12 +10,6 @@ function decodeJwt(token: string): any {
     const parts = token.split('.');
     console.log('JWT token parts:', parts);
 
-    // Adjust the part length check to allow missing signature
-    // if (parts.length < 2 || parts.length > 3) {
-    //   console.error('Invalid JWT token structure:', token);
-    //   throw new Error('Invalid JWT token');
-    // }
-
     // Decode payload
     const payload = JSON.parse(atob(parts[1]));
     console.log('Decoded JWT payload:', payload);
@@ -52,10 +46,6 @@ export function useIframeParams(): IframeParams {
   const [params, setParams] = useState<IframeParams>({
     instance: null,
     instanceId: null,
-    locale: null,
-    viewMode: null,
-    siteUrl: null,
-    token: null,
     authorizationCode: null
   });
 
@@ -81,18 +71,11 @@ export function useIframeParams(): IframeParams {
     console.log('Setting iframe parameters:', {
       instance: instanceToken,
       instanceId: instanceId,
-      viewMode: urlParams.viewMode || null,
-      siteUrl: urlParams.siteUrl || null,
-      token: urlParams.token || null,
       authorizationCode: urlParams.authorizationCode || null
     });
     setParams({
       instance: instanceToken,
       instanceId: instanceId,
-      locale: urlParams.locale || null,
-      viewMode: urlParams.viewMode || null,
-      siteUrl: urlParams.siteUrl || null,
-      token: urlParams.token || null,
       authorizationCode: urlParams.authorizationCode || null
     });
   }, []);
