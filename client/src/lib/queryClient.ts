@@ -44,8 +44,18 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    // Get instance token from URL if present (for Wix integration)
+    const instanceToken = new URLSearchParams(window.location.search).get('token');
+    
+    // Build headers with optional authorization
+    const headers: Record<string, string> = {};
+    if (instanceToken) {
+      headers["Authorization"] = `Instance ${instanceToken}`;
+    }
+    
     const res = await fetch(queryKey[0] as string, {
       credentials: "include",
+      headers
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {

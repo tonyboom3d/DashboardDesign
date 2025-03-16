@@ -98,12 +98,18 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Fetch settings when component mounts
   useEffect(() => {
     const loadSettings = async () => {
-      // Use the instance from iframe params or fallback to demo-instance
+      // Use the instance from iframe params or fallback to default from config
       const instanceId = instance || 'demo-instance';
       
       try {
+        // Get token from URL params if available - would be provided by Wix when loaded in iframe
+        const instanceToken = new URLSearchParams(window.location.search).get('token');
+        
         setState(prevState => ({ ...prevState, isLoading: true, error: null }));
-        const settings = await fetchSettings(instanceId);
+        console.log(`Loading settings for instance: ${instanceId}`);
+        
+        // Pass both instanceId and token to fetchSettings
+        const settings = await fetchSettings(instanceId, instanceToken);
         
         setState(prevState => ({
           ...prevState,
@@ -114,6 +120,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           isLoading: false,
           isDirty: false
         }));
+        
+        console.log(`Settings loaded successfully for instance: ${instanceId}`);
       } catch (error) {
         console.error('Failed to load settings:', error);
         setState(prevState => ({
@@ -150,7 +158,13 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setState(prevState => ({ ...prevState, isLoading: true, error: null }));
     
     try {
-      const savedSettings = await apiSaveSettings(state.settings);
+      // Get token from URL params if available - would be provided by Wix when loaded in iframe
+      const instanceToken = new URLSearchParams(window.location.search).get('token');
+      
+      console.log(`Saving settings for instance: ${state.settings.instanceId}`);
+      
+      // Pass both settings and token to saveSettings API
+      const savedSettings = await apiSaveSettings(state.settings, instanceToken);
       
       setState(prevState => ({
         ...prevState,
@@ -164,6 +178,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         description: 'Settings saved successfully.',
       });
       
+      console.log(`Settings saved successfully for instance: ${state.settings.instanceId}`);
       return savedSettings;
     } catch (error) {
       console.error('Failed to save settings:', error);
