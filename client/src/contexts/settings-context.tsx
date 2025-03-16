@@ -96,13 +96,16 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const { instanceId } = useIframeParams();
   const { toast } = useToast();
   useEffect(() => {
+    console.log('URL Parameters at start of useEffect:', window.location.search);
     const loadSettings = async () => {
       console.log("Starting to load settings", instanceId);
       const userInstanceId = instanceId;
+
       if (!userInstanceId) {
         console.error("Instance ID is required");
         throw new Error('Instance ID is required');
       }
+      
       try {
         const instanceToken = new URLSearchParams(window.location.search).get('token');
         console.log(`Fetching settings for instance ID: ${userInstanceId} with token: ${instanceToken}`);
