@@ -93,7 +93,7 @@ export const CustomizationCard: React.FC = () => {
               <div className="flex items-center justify-between w-full pr-4">
                 <div className="flex items-center gap-2">
                   <Palette className="h-5 w-5 text-gray-500" />
-                  <h3 className="text-lg font-medium text-gray-900">עיצוב</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Appearance</h3>
                 </div>
               </div>
             </AccordionTrigger>
@@ -101,7 +101,7 @@ export const CustomizationCard: React.FC = () => {
             <AccordionContent className="pt-2 pb-4 space-y-6">
               {/* Bar Style Section */}
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-3">סגנון פס</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-3">Bar Style</h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div 
                     onClick={() => setBarStyle('simple')}
@@ -116,9 +116,9 @@ export const CustomizationCard: React.FC = () => {
                       <div className="h-full bg-primary-500 rounded-full" style={{ width: '60%' }}></div>
                     </div>
                     <span className={cn(
-                      "text-xs font-medium mr-2",
+                      "text-xs font-medium ml-2",
                       settings.barStyle === 'simple' ? "text-primary-600" : "text-gray-600"
-                    )}>פשוט</span>
+                    )}>Simple</span>
                   </div>
                   
                   <div 
@@ -140,22 +140,22 @@ export const CustomizationCard: React.FC = () => {
                       ></div>
                     </div>
                     <span className={cn(
-                      "text-xs font-medium mr-2",
+                      "text-xs font-medium ml-2",
                       settings.barStyle === 'gradient' ? "text-primary-600" : "text-gray-600"
-                    )}>גרדיאנט</span>
+                    )}>Gradient</span>
                   </div>
                 </div>
               </div>
               
               {/* Colors Section */}
               <div className="space-y-4">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">צבעים</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Colors</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="backgroundColor" className="block text-sm font-medium text-gray-700 mb-1">צבע רקע</Label>
+                    <Label htmlFor="backgroundColor" className="block text-sm font-medium text-gray-700 mb-1">Background Color</Label>
                     <div className="flex items-center space-x-2">
-                      <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden">
+                      <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
                         <Input 
                           type="color" 
                           id="backgroundColor" 
@@ -191,9 +191,9 @@ export const CustomizationCard: React.FC = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="barColor" className="block text-sm font-medium text-gray-700 mb-1">צבע פס</Label>
+                    <Label htmlFor="barColor" className="block text-sm font-medium text-gray-700 mb-1">Bar Color</Label>
                     <div className="flex items-center">
-                      <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden ml-2">
+                      <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
                         <Input 
                           type="color" 
                           id="barColor" 
@@ -209,12 +209,27 @@ export const CustomizationCard: React.FC = () => {
                         className="block w-full py-1.5 px-3 text-sm"
                       />
                     </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {["#0070F3", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"].map(color => (
+                        <button
+                          key={color}
+                          type="button"
+                          className={cn(
+                            "w-6 h-6 rounded-md border",
+                            settings.colors.bar === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                          )}
+                          style={{ backgroundColor: color }}
+                          onClick={() => updateColor('bar', color)}
+                          title={color}
+                        />
+                      ))}
+                    </div>
                   </div>
                   
                   <div>
-                    <Label htmlFor="progressBgColor" className="block text-sm font-medium text-gray-700 mb-1">רקע ההתקדמות</Label>
+                    <Label htmlFor="progressBgColor" className="block text-sm font-medium text-gray-700 mb-1">Progress Background</Label>
                     <div className="flex items-center">
-                      <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden ml-2">
+                      <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
                         <Input 
                           type="color" 
                           id="progressBgColor" 
@@ -230,12 +245,27 @@ export const CustomizationCard: React.FC = () => {
                         className="block w-full py-1.5 px-3 text-sm"
                       />
                     </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {["#E5E7EB", "#F3F4F6", "#E0F2FE", "#E0E7FF", "#FCE7F3"].map(color => (
+                        <button
+                          key={color}
+                          type="button"
+                          className={cn(
+                            "w-6 h-6 rounded-md border",
+                            settings.colors.progressBg === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                          )}
+                          style={{ backgroundColor: color }}
+                          onClick={() => updateColor('progressBg', color)}
+                          title={color}
+                        />
+                      ))}
+                    </div>
                   </div>
                   
                   <div>
-                    <Label htmlFor="textColor" className="block text-sm font-medium text-gray-700 mb-1">צבע טקסט</Label>
+                    <Label htmlFor="textColor" className="block text-sm font-medium text-gray-700 mb-1">Text Color</Label>
                     <div className="flex items-center">
-                      <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden ml-2">
+                      <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
                         <Input 
                           type="color" 
                           id="textColor" 
@@ -251,6 +281,21 @@ export const CustomizationCard: React.FC = () => {
                         className="block w-full py-1.5 px-3 text-sm"
                       />
                     </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {["#000000", "#111827", "#374151", "#4B5563", "#6B7280"].map(color => (
+                        <button
+                          key={color}
+                          type="button"
+                          className={cn(
+                            "w-6 h-6 rounded-md border",
+                            settings.colors.text === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                          )}
+                          style={{ backgroundColor: color }}
+                          onClick={() => updateColor('text', color)}
+                          title={color}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -258,9 +303,9 @@ export const CustomizationCard: React.FC = () => {
               {/* Border Options */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="borderColor" className="block text-sm font-medium text-gray-700 mb-1">צבע מסגרת</Label>
+                  <Label htmlFor="borderColor" className="block text-sm font-medium text-gray-700 mb-1">Border Color</Label>
                   <div className="flex items-center">
-                    <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden ml-2">
+                    <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
                       <Input 
                         type="color" 
                         id="borderColor" 
@@ -276,10 +321,30 @@ export const CustomizationCard: React.FC = () => {
                       className="block w-full py-1.5 px-3 text-sm"
                     />
                   </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {["#E5E7EB", "#D1D5DB", "#9CA3AF", "#6B7280", "transparent"].map(color => (
+                      <button
+                        key={color}
+                        type="button"
+                        className={cn(
+                          "w-6 h-6 rounded-md border",
+                          settings.border.color === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                        )}
+                        style={{ 
+                          backgroundColor: color === 'transparent' ? 'white' : color,
+                          backgroundImage: color === 'transparent' ? 'linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0), linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0)' : 'none',
+                          backgroundSize: '6px 6px',
+                          backgroundPosition: '0 0, 3px 3px'
+                        }}
+                        onClick={() => updateBorder('color', color)}
+                        title={color}
+                      />
+                    ))}
+                  </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="borderThickness" className="block text-sm font-medium text-gray-700 mb-1">עובי מסגרת</Label>
+                  <Label htmlFor="borderThickness" className="block text-sm font-medium text-gray-700 mb-1">Border Thickness</Label>
                   <div className="flex items-center space-x-4">
                     <Slider 
                       id="borderThickness"
@@ -297,19 +362,19 @@ export const CustomizationCard: React.FC = () => {
               
               {/* Text Alignment */}
               <div>
-                <Label htmlFor="textAlignment" className="block text-sm font-medium text-gray-700 mb-1">יישור טקסט</Label>
+                <Label htmlFor="textAlignment" className="block text-sm font-medium text-gray-700 mb-1">Text Alignment</Label>
                 <div className="inline-flex items-center rounded-md shadow-sm">
                   <Button
                     variant="outline"
                     size="sm"
                     type="button"
-                    onClick={() => setTextAlignment('right')}
+                    onClick={() => setTextAlignment('left')}
                     className={cn(
-                      "px-4 py-2 rounded-r-md",
-                      settings.textAlignment === 'right' && "bg-primary-50 border-primary-500 text-primary-500"
+                      "px-4 py-2 rounded-l-md",
+                      settings.textAlignment === 'left' && "bg-primary-50 border-primary-500 text-primary-500"
                     )}
                   >
-                    <AlignRight className="h-4 w-4" />
+                    <AlignLeft className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="outline"
@@ -327,13 +392,13 @@ export const CustomizationCard: React.FC = () => {
                     variant="outline"
                     size="sm"
                     type="button"
-                    onClick={() => setTextAlignment('left')}
+                    onClick={() => setTextAlignment('right')}
                     className={cn(
-                      "px-4 py-2 rounded-l-md",
-                      settings.textAlignment === 'left' && "bg-primary-50 border-primary-500 text-primary-500"
+                      "px-4 py-2 rounded-r-md",
+                      settings.textAlignment === 'right' && "bg-primary-50 border-primary-500 text-primary-500"
                     )}
                   >
-                    <AlignLeft className="h-4 w-4" />
+                    <AlignRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -344,39 +409,37 @@ export const CustomizationCard: React.FC = () => {
           <AccordionItem value="text-content" className="border rounded-lg px-4">
             <AccordionTrigger className="py-4 hover:no-underline">
               <div className="flex items-center justify-between w-full pr-4">
-                <h3 className="text-lg font-medium text-gray-900">טקסטים</h3>
+                <h3 className="text-lg font-medium text-gray-900">Text Content</h3>
               </div>
             </AccordionTrigger>
             
             <AccordionContent className="pt-2 pb-4 space-y-4">
               <div>
-                <Label htmlFor="barText" className="block text-sm font-medium text-gray-700 mb-1">טקסט הפס</Label>
+                <Label htmlFor="barText" className="block text-sm font-medium text-gray-700 mb-1">Bar Text</Label>
                 <Input 
                   id="barText" 
                   type="text" 
                   value={settings.text.barText}
                   onChange={(e) => updateText('barText', e.target.value)}
                   className="block w-full"
-                  dir="rtl"
                 />
-                <p className="mt-1 text-xs text-gray-500">השתמש ב-{'{remaining}'} כמקום שמור לסכום הנותר.</p>
+                <p className="mt-1 text-xs text-gray-500">Use {'{remaining}'} as a placeholder for the remaining amount.</p>
               </div>
               
               <div>
-                <Label htmlFor="successText" className="block text-sm font-medium text-gray-700 mb-1">הודעת הצלחה</Label>
+                <Label htmlFor="successText" className="block text-sm font-medium text-gray-700 mb-1">Success Message</Label>
                 <Input 
                   id="successText" 
                   type="text" 
                   value={settings.text.successText}
                   onChange={(e) => updateText('successText', e.target.value)}
                   className="block w-full"
-                  dir="rtl"
                 />
               </div>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="initialText" className="block text-sm font-medium text-gray-700">טקסט התחלתי</Label>
+                  <Label htmlFor="initialText" className="block text-sm font-medium text-gray-700">Initial Text</Label>
                   <Switch 
                     id="showInitialText" 
                     checked={settings.text.showInitialText}
@@ -397,20 +460,18 @@ export const CustomizationCard: React.FC = () => {
                   onChange={(e) => updateText('initialText', e.target.value)}
                   className="block w-full"
                   disabled={!settings.text.showInitialText}
-                  dir="rtl"
                 />
-                <p className="mt-1 text-xs text-gray-500">טקסט זה יוצג כאשר העגלה ריקה.</p>
+                <p className="mt-1 text-xs text-gray-500">This text will be displayed when the cart is empty.</p>
               </div>
               
               <div>
-                <Label htmlFor="buttonText" className="block text-sm font-medium text-gray-700 mb-1">טקסט כפתור</Label>
+                <Label htmlFor="buttonText" className="block text-sm font-medium text-gray-700 mb-1">Button Text</Label>
                 <Input 
                   id="buttonText" 
                   type="text" 
                   value={settings.text.buttonText}
                   onChange={(e) => updateText('buttonText', e.target.value)}
                   className="block w-full"
-                  dir="rtl"
                 />
               </div>
             </AccordionContent>
