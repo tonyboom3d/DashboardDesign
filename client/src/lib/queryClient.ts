@@ -11,10 +11,25 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
+  instanceToken?: string | null,
+  baseUrl?: string,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  // Build headers with authorization if token is provided
+  const headers: Record<string, string> = { 
+    "Content-Type": "application/json" 
+  };
+  
+  // Add authorization header if instance token is provided
+  if (instanceToken) {
+    headers["Authorization"] = `Instance ${instanceToken}`;
+  }
+
+  // Build the full URL if a base URL is provided
+  const fullUrl = baseUrl ? `${baseUrl}${url}` : url;
+  
+  const res = await fetch(fullUrl, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
