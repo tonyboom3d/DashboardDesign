@@ -22,12 +22,13 @@ import {
 } from '@/components/ui/accordion';
 
 export const CustomizationCard: React.FC = () => {
-  const { state, updateSettings } = useSettings();
-  const { settings } = state;
-  
+  const { state } = useSettings();
+  const settings = state.settings || {};
+  const backgroundColor = settings.colors?.backgroundColor || '#FFFFFF';
+
   // For color pickers
   const [activeColorField, setActiveColorField] = useState<string | null>(null);
-  
+
   // Helper to update colors
   const updateColor = (field: keyof typeof settings.colors, value: string) => {
     updateSettings({
@@ -37,7 +38,7 @@ export const CustomizationCard: React.FC = () => {
       }
     });
   };
-  
+
   // Helper to update border
   const updateBorder = (field: keyof typeof settings.border, value: any) => {
     updateSettings({
@@ -47,7 +48,7 @@ export const CustomizationCard: React.FC = () => {
       }
     });
   };
-  
+
   // Helper to update text
   const updateText = (field: keyof typeof settings.text, value: string) => {
     updateSettings({
@@ -57,7 +58,7 @@ export const CustomizationCard: React.FC = () => {
       }
     });
   };
-  
+
   // Helper to update icon
   const updateIcon = (field: keyof typeof settings.icon, value: any) => {
     updateSettings({
@@ -67,23 +68,23 @@ export const CustomizationCard: React.FC = () => {
       }
     });
   };
-  
+
   const setTextAlignment = (alignment: 'left' | 'center' | 'right') => {
     updateSettings({ textAlignment: alignment });
   };
-  
+
   const setTextDirection = (direction: 'ltr' | 'rtl') => {
     updateSettings({ textDirection: direction });
   };
-  
+
   const setBarStyle = (style: 'simple' | 'gradient') => {
     updateSettings({ barStyle: style });
   };
-  
+
   const selectIcon = (icon: string) => {
     updateIcon('selection', icon);
   };
-  
+
   return (
     <Card>
       <CardContent className="p-6">
@@ -97,7 +98,7 @@ export const CustomizationCard: React.FC = () => {
                 </div>
               </div>
             </AccordionTrigger>
-            
+
             <AccordionContent className="pt-2 pb-4 space-y-6">
               {/* Bar Style Section */}
               <div>
@@ -120,7 +121,7 @@ export const CustomizationCard: React.FC = () => {
                       settings.barStyle === 'simple' ? "text-primary-600" : "text-gray-600"
                     )}>Simple</span>
                   </div>
-                  
+
                   <div 
                     onClick={() => setBarStyle('gradient')} 
                     className={cn(
@@ -146,11 +147,11 @@ export const CustomizationCard: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Colors Section */}
               <div className="space-y-4">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Colors</h3>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="backgroundColor" className="block text-sm font-medium text-gray-700 mb-1">Background Color</Label>
@@ -159,20 +160,20 @@ export const CustomizationCard: React.FC = () => {
                         <Input 
                           type="color" 
                           id="backgroundColor" 
-                          value={settings.colors.backgroundColor}
+                          value={settings.colors?.backgroundColor || '#FFFFFF'}
                           onChange={(e) => updateColor('background', e.target.value)}
                           className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer"
                         />
                       </div>
                       <Input 
                         type="text" 
-                        value={settings.colors.background}
+                        value={settings.colors?.background || '#FFFFFF'}
                         onChange={(e) => updateColor('background', e.target.value)}
                         className="block w-full py-1.5 px-3 text-sm"
                         placeholder="#FFFFFF"
                       />
                     </div>
-                    
+
                     <div className="mt-2 flex flex-wrap gap-2">
                       {["#FFFFFF", "#F9FAFB", "#F3F4F6", "#E5E7EB", "#D1D5DB"].map(color => (
                         <button
@@ -180,7 +181,7 @@ export const CustomizationCard: React.FC = () => {
                           type="button"
                           className={cn(
                             "w-6 h-6 rounded-md border",
-                            settings.colors.background === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                            settings.colors?.background === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
                           )}
                           style={{ backgroundColor: color }}
                           onClick={() => updateColor('background', color)}
@@ -189,7 +190,7 @@ export const CustomizationCard: React.FC = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="barColor" className="block text-sm font-medium text-gray-700 mb-1">Bar Color</Label>
                     <div className="flex items-center">
@@ -197,14 +198,14 @@ export const CustomizationCard: React.FC = () => {
                         <Input 
                           type="color" 
                           id="barColor" 
-                          value={settings.colors.bar}
+                          value={settings.colors?.bar || '#0070F3'}
                           onChange={(e) => updateColor('bar', e.target.value)}
                           className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer" 
                         />
                       </div>
                       <Input 
                         type="text" 
-                        value={settings.colors.bar}
+                        value={settings.colors?.bar || '#0070F3'}
                         onChange={(e) => updateColor('bar', e.target.value)}
                         className="block w-full py-1.5 px-3 text-sm"
                       />
@@ -216,7 +217,7 @@ export const CustomizationCard: React.FC = () => {
                           type="button"
                           className={cn(
                             "w-6 h-6 rounded-md border",
-                            settings.colors.bar === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                            settings.colors?.bar === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
                           )}
                           style={{ backgroundColor: color }}
                           onClick={() => updateColor('bar', color)}
@@ -225,7 +226,7 @@ export const CustomizationCard: React.FC = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="progressBgColor" className="block text-sm font-medium text-gray-700 mb-1">Progress Background</Label>
                     <div className="flex items-center">
@@ -233,14 +234,14 @@ export const CustomizationCard: React.FC = () => {
                         <Input 
                           type="color" 
                           id="progressBgColor" 
-                          value={settings.colors.progressBg}
+                          value={settings.colors?.progressBg || '#E5E7EB'}
                           onChange={(e) => updateColor('progressBg', e.target.value)}
                           className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer"
                         />
                       </div>
                       <Input 
                         type="text" 
-                        value={settings.colors.progressBg}
+                        value={settings.colors?.progressBg || '#E5E7EB'}
                         onChange={(e) => updateColor('progressBg', e.target.value)}
                         className="block w-full py-1.5 px-3 text-sm"
                       />
@@ -252,7 +253,7 @@ export const CustomizationCard: React.FC = () => {
                           type="button"
                           className={cn(
                             "w-6 h-6 rounded-md border",
-                            settings.colors.progressBg === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                            settings.colors?.progressBg === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
                           )}
                           style={{ backgroundColor: color }}
                           onClick={() => updateColor('progressBg', color)}
@@ -261,7 +262,7 @@ export const CustomizationCard: React.FC = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="textColor" className="block text-sm font-medium text-gray-700 mb-1">Text Color</Label>
                     <div className="flex items-center">
@@ -269,14 +270,14 @@ export const CustomizationCard: React.FC = () => {
                         <Input 
                           type="color" 
                           id="textColor" 
-                          value={settings.colors.text}
+                          value={settings.colors?.text || '#000000'}
                           onChange={(e) => updateColor('text', e.target.value)}
                           className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer"
                         />
                       </div>
                       <Input 
                         type="text" 
-                        value={settings.colors.text}
+                        value={settings.colors?.text || '#000000'}
                         onChange={(e) => updateColor('text', e.target.value)}
                         className="block w-full py-1.5 px-3 text-sm"
                       />
@@ -288,7 +289,7 @@ export const CustomizationCard: React.FC = () => {
                           type="button"
                           className={cn(
                             "w-6 h-6 rounded-md border",
-                            settings.colors.text === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                            settings.colors?.text === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
                           )}
                           style={{ backgroundColor: color }}
                           onClick={() => updateColor('text', color)}
@@ -299,7 +300,7 @@ export const CustomizationCard: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Border Options */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -309,14 +310,14 @@ export const CustomizationCard: React.FC = () => {
                       <Input 
                         type="color" 
                         id="borderColor" 
-                        value={settings.border.color}
+                        value={settings.border?.color || '#E5E7EB'}
                         onChange={(e) => updateBorder('color', e.target.value)}
                         className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer"
                       />
                     </div>
                     <Input 
                       type="text" 
-                      value={settings.border.color}
+                      value={settings.border?.color || '#E5E7EB'}
                       onChange={(e) => updateBorder('color', e.target.value)}
                       className="block w-full py-1.5 px-3 text-sm"
                     />
@@ -328,7 +329,7 @@ export const CustomizationCard: React.FC = () => {
                         type="button"
                         className={cn(
                           "w-6 h-6 rounded-md border",
-                          settings.border.color === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                          settings.border?.color === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
                         )}
                         style={{ 
                           backgroundColor: color === 'transparent' ? 'white' : color,
@@ -342,7 +343,7 @@ export const CustomizationCard: React.FC = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 <div>
                   <Label htmlFor="borderThickness" className="block text-sm font-medium text-gray-700 mb-1">Border Thickness</Label>
                   <div className="flex items-center space-x-4">
@@ -351,15 +352,15 @@ export const CustomizationCard: React.FC = () => {
                       min={0}
                       max={5}
                       step={1}
-                      value={[settings.border.thickness]}
+                      value={[settings.border?.thickness || 0]}
                       onValueChange={(value) => updateBorder('thickness', value[0])}
                       className="w-full"
                     />
-                    <span className="text-sm font-medium text-gray-900 w-8 text-right">{settings.border.thickness}px</span>
+                    <span className="text-sm font-medium text-gray-900 w-8 text-right">{settings.border?.thickness || 0}px</span>
                   </div>
                 </div>
               </div>
-              
+
               {/* Text Alignment */}
               <div>
                 <Label htmlFor="textAlignment" className="block text-sm font-medium text-gray-700 mb-1">Text Alignment</Label>
@@ -404,7 +405,7 @@ export const CustomizationCard: React.FC = () => {
               </div>
             </AccordionContent>
           </AccordionItem>
-          
+
           {/* Text Content Accordion */}
           <AccordionItem value="text-content" className="border rounded-lg px-4">
             <AccordionTrigger className="py-4 hover:no-underline">
@@ -412,37 +413,37 @@ export const CustomizationCard: React.FC = () => {
                 <h3 className="text-lg font-medium text-gray-900">Text Content</h3>
               </div>
             </AccordionTrigger>
-            
+
             <AccordionContent className="pt-2 pb-4 space-y-4">
               <div>
                 <Label htmlFor="barText" className="block text-sm font-medium text-gray-700 mb-1">Bar Text</Label>
                 <Input 
                   id="barText" 
                   type="text" 
-                  value={settings.text.barText}
+                  value={settings.text?.barText || ''}
                   onChange={(e) => updateText('barText', e.target.value)}
                   className="block w-full"
                 />
                 <p className="mt-1 text-xs text-gray-500">Use {'{remaining}'} as a placeholder for the remaining amount.</p>
               </div>
-              
+
               <div>
                 <Label htmlFor="successText" className="block text-sm font-medium text-gray-700 mb-1">Success Message</Label>
                 <Input 
                   id="successText" 
                   type="text" 
-                  value={settings.text.successText}
+                  value={settings.text?.successText || ''}
                   onChange={(e) => updateText('successText', e.target.value)}
                   className="block w-full"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="initialText" className="block text-sm font-medium text-gray-700">Initial Text</Label>
                   <Switch 
                     id="showInitialText" 
-                    checked={settings.text.showInitialText}
+                    checked={settings.text?.showInitialText || false}
                     onCheckedChange={(checked) => {
                       updateSettings({
                         text: {
@@ -456,20 +457,20 @@ export const CustomizationCard: React.FC = () => {
                 <Input 
                   id="initialText" 
                   type="text" 
-                  value={settings.text.initialText}
+                  value={settings.text?.initialText || ''}
                   onChange={(e) => updateText('initialText', e.target.value)}
                   className="block w-full"
-                  disabled={!settings.text.showInitialText}
+                  disabled={!(settings.text?.showInitialText || false)}
                 />
                 <p className="mt-1 text-xs text-gray-500">This text will be displayed when the cart is empty.</p>
               </div>
-              
+
               <div>
                 <Label htmlFor="buttonText" className="block text-sm font-medium text-gray-700 mb-1">Button Text</Label>
                 <Input 
                   id="buttonText" 
                   type="text" 
-                  value={settings.text.buttonText}
+                  value={settings.text?.buttonText || ''}
                   onChange={(e) => updateText('buttonText', e.target.value)}
                   className="block w-full"
                 />

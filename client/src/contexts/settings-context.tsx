@@ -117,6 +117,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           setState(prevState => ({
             ...prevState,
             settings: {
+              ...defaultSettings,
               ...settings,
               instanceId
             },
