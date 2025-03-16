@@ -17,10 +17,10 @@ function getUrlParams(): Record<string, string> {
   const params = new URLSearchParams(window.location.search);
   const result: Record<string, string> = {};
   
-  // Convert parameters to object
-  for (const [key, value] of params.entries()) {
+  // Convert parameters to object using forEach (compatible with all TS targets)
+  params.forEach((value, key) => {
     result[key] = value;
-  }
+  });
   
   return result;
 }
