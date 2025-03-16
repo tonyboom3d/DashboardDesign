@@ -8,15 +8,21 @@ function decodeJwt(token: string): any {
   try {
     // Split the token into parts
     const parts = token.split('.');
-    if (parts.length !== 3) throw new Error('Invalid JWT token');
+    if (parts.length !== 3) {
+      console.error('Invalid JWT token structure:', token);
+      throw new Error('Invalid JWT token');
+    }
 
-    // Decode the payload
-    const payload = JSON.parse(atob(parts[1]));
-    return payload;
+    try {
+      const payload = JSON.parse(atob(parts[1]));
+      return payload;
+    } catch (parseError) {
+      console.error('Failed to parse JWT payload:', parseError);
+    }
   } catch (error) {
     console.error('Failed to decode JWT:', error);
-    return null;
   }
+  return null;
 }
 
 /**
