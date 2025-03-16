@@ -9,26 +9,48 @@ function validateWixToken(req: Request, res: Response, next: NextFunction) {
   // Get token from Authorization header
   const authHeader = req.headers.authorization;
   
-  // For development/demo purposes, we're skipping token validation
-  // In production, we would validate this token with Wix's authentication service
-  
-  // Skip validation for local development without tokens
-  if (!authHeader) {
-    // For development only - allow requests without tokens
+  // Check for instance ID in different places
+  // 1. First check query parameters (for GET requests)
+  const queryInstanceId = req.query.instanceId as string;
+  if (queryInstanceId) {
+    // Set the instanceId in the request object for later use
+    (req as any).instanceId = queryInstanceId;
+    console.log(`[Wix API] Using instanceId from query: ${queryInstanceId}`);
     return next();
   }
   
-  // Basic validation - just check if the token exists and has expected format
-  if (authHeader.startsWith('Instance ')) {
-    // Extract the token
-    const token = authHeader.substring(9);
-    
-    // Set token in request for later use
-    (req as any).wixToken = token;
-    
-    // In production, verify the token's signature, expiration, etc.
-    // with Wix's authentication service here
-    
+  // 2. Check Authorization header
+  if (authHeader) {
+    // Basic validation - check if the token exists and has expected format
+    if (authHeader.startsWith('Instance ')) {
+      // Extract the token
+      const token = authHeader.substring(9);
+      
+      // Set token in request for later use
+      (req as any).wixToken = token;
+      
+      // Try to extract instance ID from token
+      try {
+        // For JWT tokens: token parts are header.payload.signature
+        const parts = token.split('.');
+        if (parts.length > 1) {
+          const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+          if (payload.instanceId) {
+            (req as any).instanceId = payload.instanceId;
+            console.log(`[Wix API] Extracted instanceId from JWT: ${payload.instanceId}`);
+          }
+        }
+      } catch (e) {
+        console.log('[Wix API] Could not extract instanceId from token', e);
+      }
+      
+      return next();
+    }
+  }
+  
+  // 3. For development/demo purposes, allow without tokens
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[Wix API] No token provided, allowing in development mode');
     return next();
   }
   
@@ -179,8 +201,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GET user settings - Used by Wix to fetch settings for a specific instance
   wixApiRouter.get("/get_userSettings", async (req: Request, res: Response) => {
     try {
-      // Get instance ID from query parameters
-      const instanceId = req.query.instanceId as string;
+      // Get instance ID from multiple possible sources
+      // 1. From query parameters
+      // 2. From extracted JWT token (set by middleware)
+      // 3. From request body (for compatibility)
+      const instanceId = req.query.instanceId as string || 
+                         (req as any).instanceId ||
+                         req.body?.instanceId;
       
       if (!instanceId) {
         return res.status(400).json({ message: "Instance ID is required" });
