@@ -32,22 +32,32 @@ function getUrlParams(): Record<string, string> {
   }
   return params;
 }
+
 export function useIframeParams(): { instanceId: string | null } {
   const [instanceId, setInstanceId] = useState<string | null>(null);
+
   useEffect(() => {
     const urlParams = getUrlParams();
     console.log('URL Parameters at start of useEffect:', urlParams);
     const instanceToken = urlParams.instance || null;
+    console.log('Initial instanceId:', instanceId);
+
     if (instanceToken) {
       console.log('Received instance token:', instanceToken);
       const payload = decodeJwt(instanceToken);
+
       if (payload) {
         setInstanceId(payload.instanceId);
-        console.log('Extracted instanceId from JWT payload:', payload.instanceId);
+        console.log('Setting instanceId:', payload.instanceId);
       } else {
         console.warn('Failed to extract instanceId from instance token. Token provided:', instanceToken);
       }
     }
   }, []);
+
+  useEffect(() => {
+    console.log('Updated instanceId:', instanceId);
+  }, [instanceId]);
+
   return { instanceId };
 }

@@ -13,7 +13,7 @@ const defaultSettings: ShippingBarSettings = {
   productSuggestionMethod: 'manual',
   barStyle: 'simple',
   colors: {
-    background: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
     bar: '#0070F3',
     progressBg: '#E5E7EB',
     text: '#111827',
@@ -95,30 +95,27 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [state, setState] = useState<SettingsState>(initialState);
   const { instanceId } = useIframeParams();
   const { toast } = useToast();
-  // Fetch settings when component mounts
   useEffect(() => {
     const loadSettings = async () => {
-      // Use the instanceId from iframe params or fallback to default from config
+      console.log("Starting to load settings", instanceId);
       const userInstanceId = instanceId;
       if (!userInstanceId) {
+        console.error("Instance ID is required");
         throw new Error('Instance ID is required');
       }
-
       try {
-        // Get token from URL params if available - would be provided by Wix when loaded in iframe
         const instanceToken = new URLSearchParams(window.location.search).get('token');
+        console.log(`Fetching settings for instance ID: ${userInstanceId} with token: ${instanceToken}`);
 
         setState(prevState => ({ ...prevState, isLoading: true, error: null }));
-        console.log(`Loading settings for instance: ${userInstanceId}`);
 
-        // Pass both instanceId and token to fetchSettings
         const settings = await fetchSettings(userInstanceId, instanceToken);
 
         setState(prevState => ({
           ...prevState,
           settings: {
             ...settings,
-            instanceId: userInstanceId // Ensure instanceId is set
+            instanceId: userInstanceId
           },
           isLoading: false,
           isDirty: false
@@ -132,7 +129,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           isLoading: false,
           error: 'Failed to load settings'
         }));
-
         toast({
           title: 'Error',
           description: 'Failed to load settings. Using default configuration.',
