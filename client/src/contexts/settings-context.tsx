@@ -154,7 +154,17 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [instanceId, toast]);
 
   // Define the missing updateSettings function
-  const updateSettings = (newSettings: Partial<ShippingBarSettings>) => {
+  const saveSettings = async () => {
+    try {
+      await apiSaveSettings(state.settings);
+      return state.settings;
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      throw error;
+    }
+  };
+
+const updateSettings = (newSettings: Partial<ShippingBarSettings>) => {
     setState(prevState => ({
       ...prevState,
       settings: {

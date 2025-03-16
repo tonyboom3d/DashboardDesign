@@ -17,44 +17,26 @@ const Dashboard: React.FC = () => {
   const { toast } = useToast();
   const { isDirty, isLoading } = state;
   const { adjustHeight, setSuccess, setError, setLoading, isInWix } = useWixIframe();
-  const { instance, token, locale, viewMode } = useIframeParams();
-  
   // Effect to update Wix parent when loading state changes
   useEffect(() => {
-    if (isInWix) {
-      if (isLoading) {
-        setLoading('Loading settings...');
-      } else {
-        adjustHeight(); // Ensure iframe height is correct
-      }
+    if (isInWix && isLoading) {
+      setLoading('Loading settings...');
+    } else {
+      adjustHeight(); // Ensure iframe height is correct
     }
   }, [isLoading, isInWix, setLoading, adjustHeight]);
   
-  // Handle saving settings with Wix integration
+  // Handle saving settings
   const handleSave = async () => {
-    if (isInWix) {
-      setLoading('Saving your settings...');
-    }
-    
+    setLoading('Saving your settings...');
     try {
       const savedSettings = await saveSettings();
-      
-      if (isInWix) {
-        setSuccess('Settings saved successfully');
-      }
-      
-      // Adjust iframe height after successful save
-      setTimeout(() => {
-        adjustHeight();
-      }, 100);
-      
+      setSuccess('Settings saved successfully');
+      adjustHeight();
       return savedSettings;
     } catch (error) {
       console.error('Failed to save settings:', error);
-      
-      if (isInWix) {
-        setError('Failed to save settings. Please try again.');
-      }
+      setError('Failed to save settings. Please try again.');
     }
   };
   
