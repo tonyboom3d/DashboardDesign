@@ -30,7 +30,19 @@ const Dashboard: React.FC = () => {
   const handleSave = async () => {
     setLoading('Saving your settings...');
     try {
-      const savedSettings = await saveSettings();
+      // Make sure we're passing the necessary parameters expected by the Wix backend
+      const { instanceId } = state.settings;
+      // Get current enabled status and other properties
+      const { enabled = true, status } = state.settings;
+      
+      // Pass the complete settings to save, ensuring instanceId is included
+      const savedSettings = await saveSettings({
+        ...state.settings,
+        instanceId,
+        enabled,
+        status
+      });
+      
       setSuccess('Settings saved successfully');
       adjustHeight();
       return savedSettings;

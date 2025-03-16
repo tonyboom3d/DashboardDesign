@@ -50,6 +50,12 @@ export async function saveSettings(
   token?: string | null
 ): Promise<ShippingBarSettings> {
   console.log('Saving settings:', settings);
+  
+  // Ensure instanceId is included in the settings object
+  if (!settings.instanceId) {
+    console.error('No instanceId provided in settings');
+    throw new Error('No instanceId provided in settings');
+  }
 
   try {
     const url = WIX_CONFIG.ENDPOINTS.UPDATE_SETTINGS;
