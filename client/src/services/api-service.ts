@@ -5,7 +5,7 @@
     try {
       console.log(`Loading settings for instance: ${instanceId}`);
 
-      // Use instanceId parameter for GET request
+      // Use query parameter for GET request
       const response = await fetch(`${this.apiBaseUrl}${WIX_CONFIG.ENDPOINTS.GET_SETTINGS}?instanceId=${instanceId}`);
 
       if (!response.ok) {

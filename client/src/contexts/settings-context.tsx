@@ -98,30 +98,30 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Fetch settings when component mounts
   useEffect(() => {
     const loadSettings = async () => {
-      // Use provided instanceId prop or fallback to instance from iframe params or default
-      const effectiveInstanceId = props.instanceId || instance || 'demo-instance';
+      // Use the instance from iframe params or fallback to default from config
+      const instanceId = instance || 'demo-instance';
       
       try {
         // Get token from URL params if available - would be provided by Wix when loaded in iframe
         const instanceToken = new URLSearchParams(window.location.search).get('token');
         
         setState(prevState => ({ ...prevState, isLoading: true, error: null }));
-        console.log(`Loading settings for instance: ${effectiveInstanceId}`);
+        console.log(`Loading settings for instance: ${instanceId}`);
         
         // Pass both instanceId and token to fetchSettings
-        const settings = await fetchSettings(effectiveInstanceId, instanceToken);
+        const settings = await fetchSettings(instanceId, instanceToken);
         
         setState(prevState => ({
           ...prevState,
           settings: {
             ...settings,
-            instanceId: effectiveInstanceId // Ensure instanceId is set
+            instanceId // Ensure instanceId is set
           },
           isLoading: false,
           isDirty: false
         }));
         
-        console.log(`Settings loaded successfully for instance: ${effectiveInstanceId}`);
+        console.log(`Settings loaded successfully for instance: ${instanceId}`);
       } catch (error) {
         console.error('Failed to load settings:', error);
         setState(prevState => ({
@@ -139,7 +139,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
 
     loadSettings();
-  }, [instance, props.instanceId, toast]);
+  }, [instance, toast]);
 
   // Update settings
   const updateSettings = (updatedSettings: Partial<ShippingBarSettings>) => {

@@ -43,14 +43,9 @@ function Router() {
 }
 
 function App() {
-  const { instance } = useIframeParams();
-  // Use direct URL param for instanceId if available (for newer Wix integrations)
-  const urlParams = new URLSearchParams(window.location.search);
-  const instanceId = urlParams.get('instanceId') || instance;
-
   return (
     <QueryClientProvider client={queryClient}>
-      <SettingsProvider instanceId={instanceId}>
+      <SettingsProvider>
         <WixApp>
           <Router />
           <Toaster />

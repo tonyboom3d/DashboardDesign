@@ -18,12 +18,12 @@ function getUrlParams(): Record<string, string> {
   // Get URL parameters
   const params = new URLSearchParams(window.location.search);
   const result: Record<string, string> = {};
-
+  
   // Convert parameters to object using forEach (compatible with all TS targets)
   params.forEach((value, key) => {
     result[key] = value;
   });
-
+  
   return result;
 }
 
@@ -36,7 +36,7 @@ function parseInstanceToken(instanceToken: string): string | null {
     // The token format seems to be: base64Data.payload.signature
     // We need to extract the instanceId from the payload
     const parts = instanceToken.split('.');
-
+    
     if (parts.length > 0) {
       try {
         // First try to parse as JWT (if it contains instanceId directly)
@@ -56,7 +56,7 @@ function parseInstanceToken(instanceToken: string): string | null {
         }
       }
     }
-
+    
     // Check if token contains instanceId directly
     if (instanceToken.includes('instanceId')) {
       const match = instanceToken.match(/instanceId":"([^"]+)"/);
@@ -64,7 +64,7 @@ function parseInstanceToken(instanceToken: string): string | null {
         return match[1];
       }
     }
-
+    
     console.warn('Failed to extract instanceId from token:', instanceToken);
     return null;
   } catch (error) {
@@ -79,23 +79,23 @@ function parseInstanceToken(instanceToken: string): string | null {
 function parseAuthorizationCode(authCode: string): string | null {
   try {
     if (!authCode || !authCode.startsWith('JWS.')) return null;
-
+    
     const parts = authCode.split('.');
     if (parts.length !== 4) return null; // JWS.header.payload.signature format
-
+    
     // Parse the payload
     const payload = JSON.parse(atob(parts[2]));
-
+    
     // Extract the data part which is a stringified JSON
     if (payload.data) {
       const data = JSON.parse(payload.data);
-
+      
       // Get instanceId from decodedToken
       if (data.decodedToken && data.decodedToken.instanceId) {
         return data.decodedToken.instanceId;
       }
     }
-
+    
     return null;
   } catch (error) {
     console.error('Error parsing authorization code:', error);
@@ -117,25 +117,25 @@ export function useIframeParams(): IframeParams {
     token: null,
     authorizationCode: null
   });
-
+  
   useEffect(() => {
     const urlParams = getUrlParams();
     const instanceToken = urlParams.instance || null;
     const authCode = urlParams.authorizationCode || null;
-
+    
     // Try to extract instanceId from different sources
     let instanceId = null;
-
+    
     // First try from instance token
     if (instanceToken) {
       instanceId = parseInstanceToken(instanceToken);
     }
-
+    
     // If not found, try from authorization code
     if (!instanceId && authCode) {
       instanceId = parseAuthorizationCode(authCode);
     }
-
+    
     setParams({
       instance: instanceToken,
       instanceId: instanceId,
@@ -146,13 +146,13 @@ export function useIframeParams(): IframeParams {
       authorizationCode: authCode,
       ...urlParams // Include any other parameters
     });
-
+    
     // Log the parameters for debugging
     console.log('Iframe Parameters:', {
       ...urlParams,
       instanceId: instanceId // Add the extracted instanceId to the log
     });
   }, []);
-
+  
   return params;
 }
