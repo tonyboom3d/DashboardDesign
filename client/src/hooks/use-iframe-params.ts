@@ -54,7 +54,7 @@ export function useIframeParams(): IframeParams {
 
   useEffect(() => {
     const urlParams = getUrlParams();
-    console.log('URL Parameters:', urlParams);
+    console.log('URL Parameters at start of useEffect:', urlParams);
 
     const instanceToken = urlParams.instance || null;
     let instanceId = null;
@@ -65,12 +65,20 @@ export function useIframeParams(): IframeParams {
       const payload = decodeJwt(instanceToken);
       if (payload) {
         instanceId = payload.instanceId;
-        console.log('Extracted instanceId from JWT:', instanceId);
+        console.log('Extracted instanceId from JWT payload:', instanceId, 'Full payload:', payload);
       } else {
         console.warn('Failed to extract instanceId from instance token');
       }
     }
 
+    console.log('Setting iframe parameters:', {
+      instance: instanceToken,
+      instanceId: instanceId,
+      viewMode: urlParams.viewMode || null,
+      siteUrl: urlParams.siteUrl || null,
+      token: urlParams.token || null,
+      authorizationCode: urlParams.authorizationCode || null
+    });
     setParams({
       instance: instanceToken,
       instanceId: instanceId,
