@@ -65,12 +65,29 @@ export async function saveSettings(
     const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}`;
     console.log(`Saving to URL: ${fullUrl}`);
 
-    const response = await apiRequest(
-      'PUT', 
-      fullUrl, 
-      settings, 
-      token
-    );
+    // Try a direct fetch request instead of using apiRequest to debug the issue
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Instance ${token}`;
+    }
+    
+    console.log('Sending request with headers:', headers);
+    console.log('Body:', JSON.stringify(settings, null, 2));
+    
+    // Use fetch directly to have more control
+    const response = await fetch(fullUrl, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(settings),
+      credentials: 'include',
+      mode: 'cors'
+    });
+    
+    // Log response status for debugging
+    console.log('Response status:', response.status);
 
     console.log('Response received:', response);
 
