@@ -7,8 +7,8 @@ export const WIX_CONFIG = {
   
   // API endpoints
   ENDPOINTS: {
-    GET_SETTINGS: '/get_userSettings',
-    UPDATE_SETTINGS: '/put_updateSettings',
+    GET_SETTINGS: '/userSettings',
+    UPDATE_SETTINGS: '/updateSettings',
     // Add other Wix API endpoints as needed
   },
   
