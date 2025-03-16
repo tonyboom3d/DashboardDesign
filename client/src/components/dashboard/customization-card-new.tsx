@@ -159,7 +159,7 @@ export const CustomizationCard: React.FC = () => {
                         <Input 
                           type="color" 
                           id="backgroundColor" 
-                          value={settings.colors.background}
+                          value={settings.colors.backgroundColor}
                           onChange={(e) => updateColor('background', e.target.value)}
                           className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer"
                         />

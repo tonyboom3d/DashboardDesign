@@ -1,5 +1,5 @@
 export interface ShippingBarColors {
-  background: string;
+  backgroundColor: string;
   bar: string;
   progressBg: string;
   text: string;

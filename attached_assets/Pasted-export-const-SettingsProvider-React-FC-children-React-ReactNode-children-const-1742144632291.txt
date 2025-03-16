@@ -1,0 +1,63 @@
+export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [state, setState] = useState<SettingsState>(initialState);
+  const { instanceId } = useIframeParams();
+  const { toast } = useToast();
+
+  // Fetch settings when component mounts
+  useEffect(() => {
+    const loadSettings = async () => {
+      // Use the instance from iframe params or fallback to default from config
+      // Use instanceId directly from parameters if available
+    const userInstanceId = instanceId || null
+      
+      try {
+        // Get token from URL params if available - would be provided by Wix when loaded in iframe
+        const instanceToken = new URLSearchParams(window.location.search).get('token');
+        
+        setState(prevState => ({ ...prevState, isLoading: true, error: null }));
+        console.log(`Loading settings for instance: ${userInstanceId}`);
+        
+        // Pass both instanceId and token to fetchSettings
+        const settings = await fetchSettings(userInstanceId, instanceToken);
+        
+        setState(prevState => ({
+          ...prevState,
+          settings: {
+            ...settings,
+            userInstanceId // Ensure instanceId is set
+          },
+          isLoading: false,
+          isDirty: false
+        }));
+        
+        console.log(`Settings loaded successfully for instance: ${instanceId1}`);
+      } catch (error) {
+        console.error('Failed to load settings:', error);
+        setState(prevState => ({
+          ...prevState,
+          isLoading: false,
+          error: 'Failed to load settings'
+        }));
+        
+        toast({
+          title: 'Error',
+          description: 'Failed to load settings. Using default configuration.',
+          variant: 'destructive',
+        });
+      }
+    };
+
+    loadSettings();
+  }, [instance, toast]);
+
+  // Update settings
+  const updateSettings = (updatedSettings: Partial<ShippingBarSettings>) => {
+    setState(prevState => ({
+      ...prevState,
+      settings: {
+        ...prevState.settings,
+        ...updatedSettings
+      },
+      isDirty: true
+    }));
+  };

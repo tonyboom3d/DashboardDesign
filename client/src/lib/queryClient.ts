@@ -18,7 +18,7 @@ export async function apiRequest(
   const headers: Record<string, string> = { 
     "Content-Type": "application/json" 
   };
-  
+
   // Add authorization header if instance token is provided
   if (instanceToken) {
     headers["Authorization"] = `Instance ${instanceToken}`;
@@ -26,14 +26,19 @@ export async function apiRequest(
 
   // Build the full URL if a base URL is provided
   const fullUrl = baseUrl ? `${baseUrl}${url}` : url;
-  
-  const res = await fetch(fullUrl, {
+
+  const fetchOptions: RequestInit = {
     method,
     headers,
-    body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
-  });
+  };
 
+  // Only include the body if the method is not GET or HEAD
+  if (data && method !== 'GET' && method !== 'HEAD') {
+    fetchOptions.body = JSON.stringify(data);
+  }
+
+  const res = await fetch(fullUrl, fetchOptions);
   await throwIfResNotOk(res);
   return res;
 }

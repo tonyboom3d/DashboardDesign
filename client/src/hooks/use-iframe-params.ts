@@ -20,13 +20,9 @@ function decodeJwt(token: string): any {
   }
 }
 
-/**
- * Extract URL parameters from current location
- */
 function getUrlParams(): Record<string, string> {
   const params: Record<string, string> = {};
   const queryString = window.location.search.substring(1);
-
   if (queryString) {
     const pairs = queryString.split('&');
     for (const pair of pairs) {
@@ -34,51 +30,24 @@ function getUrlParams(): Record<string, string> {
       params[decodeURIComponent(key)] = decodeURIComponent(value || '');
     }
   }
-
   return params;
 }
-
-/**
- * Hook to get iframe parameters when embedded in Wix
- * Returns instance ID, locale, view mode and other parameters
- */
-export function useIframeParams(): IframeParams {
-  const [params, setParams] = useState<IframeParams>({
-    instance: null,
-    instanceId: null,
-    authorizationCode: null
-  });
-
+export function useIframeParams(): { instanceId: string | null } {
+  const [instanceId, setInstanceId] = useState<string | null>(null);
   useEffect(() => {
     const urlParams = getUrlParams();
     console.log('URL Parameters at start of useEffect:', urlParams);
-
     const instanceToken = urlParams.instance || null;
-    let instanceId = null;
-
-    // Decode the JWT token to extract instanceId
     if (instanceToken) {
       console.log('Received instance token:', instanceToken);
       const payload = decodeJwt(instanceToken);
       if (payload) {
-        instanceId = payload.instanceId;
-        console.log('Extracted instanceId from JWT payload:', instanceId, 'Full payload:', payload);
+        setInstanceId(payload.instanceId);
+        console.log('Extracted instanceId from JWT payload:', payload.instanceId);
       } else {
         console.warn('Failed to extract instanceId from instance token. Token provided:', instanceToken);
       }
     }
-
-    console.log('Setting iframe parameters:', {
-      instance: instanceToken,
-      instanceId: instanceId,
-      authorizationCode: urlParams.authorizationCode || null
-    });
-    setParams({
-      instance: instanceToken,
-      instanceId: instanceId,
-      authorizationCode: urlParams.authorizationCode || null
-    });
   }, []);
-
-  return params;
+  return { instanceId };
 }

@@ -23,7 +23,7 @@ export async function fetchSettings(
       {},
       token
     );
-
+    
     console.log('Response received:', response);
 
     if (!response.ok) {

@@ -13,7 +13,8 @@ export const WIX_CONFIG = {
   },
   
   // Default instance ID to use when no instance is provided
-  DEFAULT_INSTANCE: 'demo-instance',
+  // DEFAULT_INSTANCE: 'demo-instance',
+  DEFAULT_INSTANCE: 'b12bfa15-eed5-4bc1-a70e-ce6d3ab17f9c',
   
   // CORS configuration
   CORS: {

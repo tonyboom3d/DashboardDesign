@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { ShippingBarSettings, SettingsContextType, SettingsState, PreviewState, Product } from '@/types/settings';
 import { fetchSettings, saveSettings as apiSaveSettings } from '@/api/settings';
 import { useIframeParams } from '@/hooks/use-iframe-params';
 import { useToast } from '@/hooks/use-toast';
+
 
 // Default settings
 const defaultSettings: ShippingBarSettings = {
@@ -87,42 +88,40 @@ const initialState: SettingsState = {
   error: null
 };
 
-// Create context
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<SettingsState>(initialState);
-  const { instance } = useIframeParams();
+  const { instanceId } = useIframeParams();
   const { toast } = useToast();
-
   // Fetch settings when component mounts
   useEffect(() => {
     const loadSettings = async () => {
-      // Use the instance from iframe params or fallback to default from config
-      // Use instanceId directly from parameters if available
-    const instanceId = instanceIdFromParams || 'demo-instance';
-      
+      // Use the instanceId from iframe params or fallback to default from config
+      const userInstanceId = instanceId || 'demo-instance';
+
       try {
         // Get token from URL params if available - would be provided by Wix when loaded in iframe
         const instanceToken = new URLSearchParams(window.location.search).get('token');
-        
+
         setState(prevState => ({ ...prevState, isLoading: true, error: null }));
-        console.log(`Loading settings for instance: ${instanceId}`);
-        
+        console.log(`Loading settings for instance: ${userInstanceId}`);
+
         // Pass both instanceId and token to fetchSettings
-        const settings = await fetchSettings(instanceId, instanceToken);
-        
+        const settings = await fetchSettings(userInstanceId, instanceToken);
+
         setState(prevState => ({
           ...prevState,
           settings: {
             ...settings,
-            instanceId // Ensure instanceId is set
+            instanceId: userInstanceId // Ensure instanceId is set
           },
           isLoading: false,
           isDirty: false
         }));
-        
-        console.log(`Settings loaded successfully for instance: ${instanceId}`);
+
+        console.log(`Settings loaded successfully for instance: ${userInstanceId}`);
       } catch (error) {
         console.error('Failed to load settings:', error);
         setState(prevState => ({
@@ -130,7 +129,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           isLoading: false,
           error: 'Failed to load settings'
         }));
-        
+
         toast({
           title: 'Error',
           description: 'Failed to load settings. Using default configuration.',
@@ -138,10 +137,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         });
       }
     };
-
     loadSettings();
-  }, [instance, toast]);
-
+  }, [instanceId, toast]);
   // Update settings
   const updateSettings = (updatedSettings: Partial<ShippingBarSettings>) => {
     setState(prevState => ({
