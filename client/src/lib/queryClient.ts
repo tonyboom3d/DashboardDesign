@@ -23,6 +23,8 @@ export async function apiRequest(
   if (instanceToken) {
     headers["Authorization"] = `Instance ${instanceToken}`;
   }
+  
+  console.log(`Making ${method} request to ${url}`, data ? 'with data' : 'without data');
 
   // Build the full URL if a base URL is provided
   const fullUrl = baseUrl ? `${baseUrl}${url}` : url;

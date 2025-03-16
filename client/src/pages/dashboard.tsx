@@ -48,7 +48,15 @@ const Dashboard: React.FC = () => {
       return savedSettings;
     } catch (error) {
       console.error('Failed to save settings:', error);
-      setError('Failed to save settings. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setError(`Failed to save settings: ${errorMessage}`);
+      
+      // Show more detailed error in toast
+      toast({
+        title: 'Error Saving Settings',
+        description: `${errorMessage}. Please check the console for more details.`,
+        variant: 'destructive',
+      });
     }
   };
   

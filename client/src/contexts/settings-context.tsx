@@ -153,11 +153,32 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
   }, [instanceId, toast]);
 
-  // Define the missing updateSettings function
-  const saveSettings = async () => {
+  // Define saveSettings function to persist settings to backend
+  const saveSettings = async (settingsToSave = state.settings) => {
     try {
-      await apiSaveSettings(state.settings);
-      return state.settings;
+      console.log('Saving settings to backend:', settingsToSave);
+      // Make sure we're sending a complete settings object with instanceId
+      const completeSettings = {
+        ...state.settings,
+        ...settingsToSave
+      };
+      
+      // Ensure instanceId is included
+      if (!completeSettings.instanceId) {
+        console.error('No instanceId found in settings');
+        throw new Error('No instanceId provided in settings');
+      }
+      
+      const savedSettings = await apiSaveSettings(completeSettings);
+      
+      // Update local state with the saved settings
+      setState(prevState => ({
+        ...prevState,
+        settings: savedSettings,
+        isDirty: false
+      }));
+      
+      return savedSettings;
     } catch (error) {
       console.error('Failed to save settings:', error);
       throw error;

@@ -58,7 +58,10 @@ export async function saveSettings(
   }
 
   try {
-    const url = WIX_CONFIG.ENDPOINTS.UPDATE_SETTINGS;
+    // Add instanceId as a query parameter
+    const instanceId = settings.instanceId;
+    const url = `${WIX_CONFIG.ENDPOINTS.UPDATE_SETTINGS}?instanceId=${instanceId}`;
+    console.log(`Saving settings to URL: ${url}`, settings);
     const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}`;
     console.log(`Saving to URL: ${fullUrl}`);
 
