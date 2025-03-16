@@ -1,0 +1,157 @@
+Project Overview:
+
+Create a static React-based web app dashboard externally hosted, embedded via iframe into the Wix dashboard. The app allows Wix store owners to configure and customize a progress bar visually indicating to site visitors how much more they need to spend to qualify for free shipping. The app also recommends products visitors can add to reach the free shipping threshold.
+
+Technology Stack:
+
+Frontend: React, TypeScript, Tailwind CSS, shadcn/ui, Radix UI, React Hook Form
+
+Icons: Lucide React
+
+Variants Management: class-variance-authority
+
+Hosting: Replit (Node.js environment)
+
+Functional Requirements:
+
+Dashboard UI (Admin Interface):
+
+1. General Settings:
+
+Enable/Disable the Free Shipping Bar
+
+Free Shipping Threshold (currency input)
+
+Product Suggestion Method (manual/automatic)
+
+2. Customization Options:
+
+Bar Style (simple, gradient)
+
+Background and Bar Color
+
+Progress Background Color
+
+Border Color & Thickness
+
+Accent Color
+
+Text Color
+
+Highlight Color
+
+Success Message Text
+
+Bar Text (dynamic placeholder: ${remaining})
+
+Button Text ("Add to Cart")
+
+Text Alignment (left, center, right)
+
+Text Direction (LTR/RTL)
+
+Icon Selection (Emoji or Lucide React icons)
+
+Icon Position (before/after text)
+
+3. Visibility & Placement Settings:
+
+Toggle display on Desktop/Mobile:
+
+Product Page
+
+Cart Page
+
+Mini Cart
+
+Header
+
+Position of bar (top, bottom)
+
+4. Live Preview:
+
+Real-time preview of settings adjustments
+
+Preview in Desktop and Mobile mode
+
+Simulate product page, cart, mini-cart appearances
+
+5. Recommended Products Management:
+
+Fetch suggested products from Wix CMS backend
+
+User can select products to recommend
+
+5. Analytics & Performance:
+
+Display metrics:
+
+View Count (bar impressions)
+
+Conversion Rate (users reaching free shipping)
+
+Impact on Average Order Value (AOV)
+
+5. Wix Integration via iframe:
+
+Embed securely in Wix dashboard via iframe
+
+Read Wix iframe URL parameters (instance, locale, viewMode, siteUrl)
+
+Authenticate user requests using Wix instance token
+
+6. API Communication:
+
+Backend Wix CMS endpoints:
+
+get_userSettings: Fetch user settings
+
+put_updateSettings: Update and save user settings
+
+Authentication via Wix-provided instance token (Authorization: Instance <token>)
+
+6. Security & CORS:
+
+Backend Wix CMS configured for secure CORS requests (https://<your-replit-url>.repl.co)
+
+Headers configured:
+
+Access-Control-Allow-Origin
+
+Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS
+
+Access-Control-Allow-Headers: Authorization, Content-Type
+
+HTTPS required
+
+7. User Session Management:
+
+Store user-selected products in session storage (client-side)
+
+7. Logging & Monitoring:
+
+Clearly log API interactions (requests, responses, errors)
+
+8. Responsive & Accessible Design:
+
+Fully responsive across devices
+
+Accessibility compliance ensured (via Radix UI)
+
+Reusing Existing Assets:
+
+Base UI and component styles on existing designs found in project folders: client, attached_assets, and dist.
+
+Reuse design elements from provided folders wherever possible to ensure consistency.
+
+Deliverables for Replit:
+
+Static React app with outlined features
+
+API integration with Wix backend
+
+Proper iframe handling
+
+Fully responsive, accessible, and maintainable code
+
+Reference detailed research document (attached separately) for additional technical context, security details, and example implementations.
