@@ -99,21 +99,16 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     console.log('URL Parameters at start of useEffect:', window.location.search);
     const loadSettings = async () => {
       console.log("Starting to load settings", instanceId);
-      const userInstanceId = instanceId;
-
+      const userInstanceId = instanceId || 'default-instance-id'; // Set a default if null
       if (!userInstanceId) {
         console.error("Instance ID is required");
         throw new Error('Instance ID is required');
       }
-      
       try {
         const instanceToken = new URLSearchParams(window.location.search).get('token');
         console.log(`Fetching settings for instance ID: ${userInstanceId} with token: ${instanceToken}`);
-
         setState(prevState => ({ ...prevState, isLoading: true, error: null }));
-
         const settings = await fetchSettings(userInstanceId, instanceToken);
-
         setState(prevState => ({
           ...prevState,
           settings: {
@@ -123,7 +118,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           isLoading: false,
           isDirty: false
         }));
-
         console.log(`Settings loaded successfully for instance: ${userInstanceId}`);
       } catch (error) {
         console.error('Failed to load settings:', error);
