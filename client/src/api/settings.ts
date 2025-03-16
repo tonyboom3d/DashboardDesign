@@ -10,35 +10,31 @@ export async function fetchSettings(
   instanceId: string, 
   token?: string | null
 ): Promise<ShippingBarSettings> {
-  // For development - use local API if Wix API URL is not set
-  if (!WIX_CONFIG.API_BASE_URL) {
-    const response = await fetch(`/api/settings/${instanceId}`, {
-      credentials: 'include'
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch settings: ${response.status}`);
-    }
-    
-    return response.json();
-  }
-  
-  // For production with Wix - use configured Wix API
+  console.log(`Fetching settings for instanceId: ${instanceId}`);
+
   try {
     const url = WIX_CONFIG.ENDPOINTS.GET_SETTINGS;
+    const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}?instanceId=${instanceId}`;
+    console.log(`Fetching from URL: ${fullUrl}`);
+
     const response = await apiRequest(
       'GET', 
-      url, 
-      { instanceId }, 
-      token,
-      WIX_CONFIG.API_BASE_URL
+      fullUrl, 
+      {},
+      token
     );
-    
+
+    console.log('Response received:', response);
+
     if (!response.ok) {
+      console.error('Failed to fetch settings:', response.status);
       throw new Error(`Failed to fetch settings from Wix API: ${response.status}`);
     }
-    
-    return response.json();
+
+    const settings = await response.json();
+    console.log('Settings fetched successfully:', settings);
+
+    return settings;
   } catch (error) {
     console.error("Error fetching settings from Wix API:", error);
     throw error;
@@ -53,28 +49,31 @@ export async function saveSettings(
   settings: ShippingBarSettings, 
   token?: string | null
 ): Promise<ShippingBarSettings> {
-  // For development - use local API if Wix API URL is not set
-  if (!WIX_CONFIG.API_BASE_URL) {
-    const response = await apiRequest('POST', '/api/settings', settings);
-    return response.json();
-  }
-  
-  // For production with Wix - use configured Wix API
+  console.log('Saving settings:', settings);
+
   try {
     const url = WIX_CONFIG.ENDPOINTS.UPDATE_SETTINGS;
+    const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}`;
+    console.log(`Saving to URL: ${fullUrl}`);
+
     const response = await apiRequest(
       'PUT', 
-      url, 
+      fullUrl, 
       settings, 
-      token,
-      WIX_CONFIG.API_BASE_URL
+      token
     );
-    
+
+    console.log('Response received:', response);
+
     if (!response.ok) {
+      console.error('Failed to save settings:', response.status);
       throw new Error(`Failed to save settings to Wix API: ${response.status}`);
     }
-    
-    return response.json();
+
+    const updatedSettings = await response.json();
+    console.log('Settings saved successfully:', updatedSettings);
+
+    return updatedSettings;
   } catch (error) {
     console.error("Error saving settings to Wix API:", error);
     throw error;

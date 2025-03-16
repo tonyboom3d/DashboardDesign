@@ -3,7 +3,7 @@
 
 export const WIX_CONFIG = {
   // Base URL for Wix backend API
-  API_BASE_URL: import.meta.env.VITE_WIX_API_URL || 'https://your-repl-name.your-username.repl.co/wix/api',
+  API_BASE_URL: "https://tonyboom3d.wixsite.com/freeshippingbar/_functions",
   
   // API endpoints
   ENDPOINTS: {
