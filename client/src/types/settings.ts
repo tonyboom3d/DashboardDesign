@@ -16,6 +16,8 @@ export interface ShippingBarText {
   barText: string;
   successText: string;
   buttonText: string;
+  initialText: string;
+  showInitialText: boolean;
 }
 
 export interface ShippingBarIcon {
