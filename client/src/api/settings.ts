@@ -80,7 +80,7 @@ export async function saveSettings(
     
     // Use fetch directly to have more control
     const response = await fetch(fullUrl, {
-      method: 'PUT',
+      method: 'POST',
       headers,
       body: JSON.stringify(settings),
       credentials: 'include',
