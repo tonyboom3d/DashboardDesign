@@ -1,0 +1,132 @@
+Body: {
+  "instanceId": "b12bfa15-eed5-4bc1-a70e-ce6d3ab17f9c",
+  "enabled": true,
+  "threshold": 5000,
+  "productSuggestionMethod": "manual",
+  "barStyle": "simple",
+  "colors": {
+    "backgroundColor": "#FFFFFF",
+    "bar": "#0070F3",
+    "progressBg": "#E5E7EB",
+    "text": "#111827",
+    "accent": "#10B981",
+    "highlight": "#F59E0B"
+  },
+  "border": {
+    "color": "#E5E7EB",
+    "thickness": 1
+  },
+  "text": {
+    "barText": "Add ${remaining} more to get FREE shipping!",
+    "successText": "🎉 Congratulations! You've qualified for FREE shipping!",
+    "buttonText": "Add to Cart",
+    "initialText": "Add items to your cart and get free shipping at $50.00!",
+    "showInitialText": true
+  },
+  "textAlignment": "left",
+  "textDirection": "ltr",
+  "icon": {
+    "type": "emoji",
+    "selection": "🚚",
+    "position": "before"
+  },
+  "visibility": {
+    "productPage": {
+      "desktop": true,
+      "mobile": true
+    },
+    "cartPage": {
+      "desktop": true,
+      "mobile": true
+    },
+    "miniCart": {
+      "desktop": true,
+      "mobile": true
+    },
+    "header": {
+      "desktop": false,
+      "mobile": false
+    }
+  },
+  "position": "top",
+  "recommendedProducts": [
+    {
+      "id": "1",
+      "name": "Premium T-Shirt",
+      "price": 2999,
+      "imageUrl": "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=100&h=100&fit=crop&auto=format"
+    },
+    {
+      "id": "2",
+      "name": "Travel Mug",
+      "price": 1899,
+      "imageUrl": "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=100&h=100&fit=crop&auto=format"
+    },
+    {
+      "id": "3",
+      "name": "Leather Wallet",
+      "price": 3499,
+      "imageUrl": "https://images.unsplash.com/photo-1604026053328-7fca346fcb26?w=100&h=100&fit=crop&auto=format"
+    }
+  ],
+  "analytics": {
+    "viewCount": 3742,
+    "conversionRate": "24.8%",
+    "aov": "$64.37"
+  },
+  "currentUserSettings": {
+    "enabled": true,
+    "usage": 0,
+    "currentPlan": "Free",
+    "resetDate": "2025-03-15T10:54:44.654Z",
+    "fullUserSettings": {
+      "fullUserSettings": {
+        "showOnMobileCart": true,
+        "barStyle": "gradient",
+        "successText": "Congrats! You've qualified for FREE shipping!",
+        "backgroundColor": "#F5F5F5",
+        "showOnDesktop": true,
+        "showOnProduct": true,
+        "viewCount": 0,
+        "borderThickness": 1,
+        "currencySymbol": "₪",
+        "showOnMobile": true,
+        "showOnDesktopMiniCart": true,
+        "enabled": true,
+        "textColor": "#000000",
+        "showOnMobileMiniCart": true,
+        "showOnMobileProduct": true,
+        "showOnMiniCart": true,
+        "buttonText": "הוסף לסל",
+        "showOnDesktopHeader": true,
+        "textAlign": "right",
+        "textDirection": "rtl",
+        "merchantId": "b12bfa15-eed5-4bc1-a70e-ce6d3ab17f9c",
+        "id": 1,
+        "accentColor": "#FF5722",
+        "maxTitleLength": 20,
+        "productSelectionMethod": "manual",
+        "barText": "${remaining} עד משלוח חינם!",
+        "showAddButton": true,
+        "threshold": "100",
+        "showOnCart": true,
+        "currencyCode": "ILS",
+        "showOnDesktopProduct": true,
+        "showOnHeader": true,
+        "position": "top",
+        "barColor": "#4f46e5",
+        "progressBgColor": "#E0E0E0",
+        "bgBarStyle": "simple",
+        "iconPosition": "before",
+        "showOnMobileHeader": true,
+        "showOnDesktopCart": true,
+        "iconEmoji": "🚚",
+        "maxSuggestions": 3,
+        "plan": "free",
+        "borderColor": "#E0E0E0"
+      },
+      "status": "active",
+      "currentPlan": "free"
+    }
+  }
+}
