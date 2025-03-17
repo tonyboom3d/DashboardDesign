@@ -45,77 +45,37 @@ export async function fetchSettings(
  * Save settings to either the local development API or the Wix API
  * depending on configuration and environment
  */
-export async function saveSettings(
-  settings: ShippingBarSettings, 
-  token?: string | null
-): Promise<ShippingBarSettings> {
-  console.log('Saving settings:', settings);
-  
-  // Ensure instanceId is included in the settings object
+export async function saveSettings(settings: ShippingBarSettings, token?: string | null): Promise<ShippingBarSettings> {
   if (!settings.instanceId) {
-    console.error('No instanceId provided in settings');
-    throw new Error('No instanceId provided in settings');
+    throw new Error('No instanceId provided')
   }
 
-  try {
-    // Add instanceId as a query parameter
-    const instanceId = settings.instanceId;
-    const url = `${WIX_CONFIG.ENDPOINTS.UPDATE_SETTINGS}?instanceId=${instanceId}`;
-    console.log(`Saving settings to URL: ${url}`, settings);
-    const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}`;
-    console.log(`Saving to URL: ${fullUrl}`);
+  const params = new URLSearchParams({
+    instanceId: settings.instanceId,
+    enabled: String(settings.enabled),
+    settingsData: encodeURIComponent(JSON.stringify(settings))
+  }).toString()
 
-    // Try a direct fetch request instead of using apiRequest to debug the issue
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    };
-    
-    if (token) {
-      headers['Authorization'] = `Instance ${token}`;
-    }
-    
-    console.log('Sending request with headers:', headers);
-    console.log('Body:', JSON.stringify(settings, null, 2));
-    
-    // Send to webhook.site for debugging
-    fetch('https://webhook.site/9ca408f1-fd15-4efb-b300-04513b46320b', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        settings,
-        headers,
-        timestamp: new Date().toISOString()
-      })
-    }).catch(console.error); // Non-blocking
+  const fullUrl = `https://tonyboom3d.wixsite.com/freeshippingbar/_functions/updateSettings?${params}`
 
-    // Use fetch directly to have more control
-    const response = await fetch(fullUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(settings),
-      credentials: 'include',
-      mode: 'cors'
-    });
-    
-    // Log response status for debugging
-    console.log('Response status:', response.status);
-
-    console.log('Response received:', response);
-
-    if (!response.ok) {
-      console.error('Failed to save settings:', response.status);
-      throw new Error(`Failed to save settings to Wix API: ${response.status}`);
-    }
-
-    const updatedSettings = await response.json();
-    console.log('Settings saved successfully:', updatedSettings);
-
-    return updatedSettings;
-  } catch (error) {
-    console.error("Error saving settings to Wix API:", error);
-    throw error;
+  const headers: Record<string, string> = {
+    'Accept': 'application/json'
   }
+
+  if (token) {
+    headers['Authorization'] = `Instance ${token}`
+  }
+
+  const response = await fetch(fullUrl, {
+    method: 'GET',
+    headers
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to save settings: ${response.status}`)
+  }
+
+  const updatedSettings = await response.json()
+
+  return updatedSettings
 }

@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
       }
       
       // Get current enabled status and other properties
-      const { enabled = true, status } = state.settings;
+      const { enabled = true } = state.settings;
       
       console.log('About to save settings with instanceId:', instanceId);
       
@@ -46,14 +46,13 @@ const Dashboard: React.FC = () => {
         ...state.settings,
         instanceId,
         enabled,
-        status
       };
       
       // Log the full settings object we're about to save
       console.log('Full settings object being sent:', JSON.stringify(completeSettings, null, 2));
       
       // Pass the complete settings to save, ensuring instanceId is included
-      const savedSettings = await saveSettings(completeSettings);
+      const savedSettings = await saveSettings();
       
       console.log('Settings saved successfully:', savedSettings);
       setSuccess('Settings saved successfully');
