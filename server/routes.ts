@@ -82,7 +82,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const allowedOrigins = [
       'https://manage.wix.com',
       'https://editor.wix.com',
-      'https://www.wix.com'
+      'https://www.wix.com',
+      'https://tonyboom3d.wixsite.com'
     ];
     
     const origin = req.headers.origin;
@@ -97,7 +98,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
-      return res.status(200).end();
+      res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+      return res.status(204).end();
     }
     
     next();

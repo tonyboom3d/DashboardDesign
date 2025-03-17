@@ -68,6 +68,7 @@ export async function saveSettings(
     // Try a direct fetch request instead of using apiRequest to debug the issue
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'Accept': 'application/json'
     };
     
     if (token) {
