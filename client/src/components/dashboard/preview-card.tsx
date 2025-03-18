@@ -32,8 +32,8 @@ export const PreviewCard: React.FC = () => {
   };
   
   return (
-    <div className="space-y-6">
-      <Card className="sticky top-4">
+    <div className="space-y-6 relative">
+      <Card className="sticky top-4 z-50 max-h-[calc(100vh-2rem)] overflow-y-auto">
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">Live Preview</h2>
         </div>
