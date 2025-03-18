@@ -2,13 +2,13 @@
 // Configuration settings for Wix integration
 
 export const WIX_CONFIG = {
-  // Base URL for Wix backend API
-  API_BASE_URL: "https://tonyboom3d.wixsite.com/freeshippingbar/_functions",
+  // Base URL for backend API (use empty string for relative paths)
+  API_BASE_URL: "",
   
   // API endpoints
   ENDPOINTS: {
-    GET_SETTINGS: '/userSettings',
-    UPDATE_SETTINGS: '/use_updateSettings',
+    GET_SETTINGS: '/wix/api/get_userSettings',
+    UPDATE_SETTINGS: '/wix/api/put_updateSettings',
     // Add other Wix API endpoints as needed
   },
   

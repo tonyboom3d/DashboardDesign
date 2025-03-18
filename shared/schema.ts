@@ -16,6 +16,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const shippingBarSettings = pgTable("shipping_bar_settings", {
   id: serial("id").primaryKey(),
   instanceId: text("instance_id").notNull().unique(),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
   enabled: boolean("enabled").default(true).notNull(),
   threshold: integer("threshold").default(5000).notNull(), // Stored in cents
   productSuggestionMethod: text("product_suggestion_method").default("manual").notNull(),

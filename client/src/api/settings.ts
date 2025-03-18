@@ -12,14 +12,23 @@ export async function fetchSettings(
 ): Promise<ShippingBarSettings> {
   console.log(`Fetching settings for instanceId: ${instanceId}`);
 
+  if (!instanceId) {
+    console.error("No instanceId provided for fetchSettings");
+    throw new Error("Instance ID is required");
+  }
+  
   try {
+    // Build the URL with instanceId as a query parameter
     const url = WIX_CONFIG.ENDPOINTS.GET_SETTINGS;
-    const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}?instanceId=${instanceId}`;
-    console.log(`Fetching from URL: ${fullUrl}`);
+    const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}`;
+    const urlWithParams = new URL(fullUrl, window.location.origin);
+    urlWithParams.searchParams.append('instanceId', instanceId);
+    
+    console.log(`Fetching from URL: ${urlWithParams.toString()}`);
 
     const response = await apiRequest(
       'GET', 
-      fullUrl, 
+      urlWithParams.toString(), 
       {},
       token
     );
@@ -37,6 +46,18 @@ export async function fetchSettings(
     return settings;
   } catch (error) {
     console.error("Error fetching settings from Wix API:", error);
+    // Fall back to default settings with the provided instanceId
+    if (error instanceof Error && error.message.includes('404')) {
+      console.log("Settings not found, returning default settings");
+      // Return default settings with the provided instanceId
+      return {
+        instanceId,
+        enabled: false,
+        threshold: 5000, // $50.00 in cents
+        // Other default properties would be here...
+        // Using type assertion since we're not providing all required fields
+      } as ShippingBarSettings;
+    }
     throw error;
   }
 }
@@ -47,35 +68,48 @@ export async function fetchSettings(
  */
 export async function saveSettings(settings: ShippingBarSettings, token?: string | null): Promise<ShippingBarSettings> {
   if (!settings.instanceId) {
-    throw new Error('No instanceId provided')
+    console.error("No instanceId provided for saveSettings");
+    throw new Error('No instanceId provided');
   }
 
-  const params = new URLSearchParams({
-    instanceId: settings.instanceId,
-    enabled: String(settings.enabled),
-    settingsData: encodeURIComponent(JSON.stringify(settings))
-  }).toString()
+  console.log(`Saving settings for instanceId: ${settings.instanceId}`);
 
-  const fullUrl = `https://tonyboom3d.wixsite.com/freeshippingbar/_functions/updateSettings?${params}`
+  try {
+    // Build the URL with proper construction
+    const url = WIX_CONFIG.ENDPOINTS.UPDATE_SETTINGS;
+    const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}`;
+    const urlWithParams = new URL(fullUrl, window.location.origin);
+    
+    // Add instanceId as a query parameter for easier debugging
+    urlWithParams.searchParams.append('instanceId', settings.instanceId);
+    
+    console.log(`Saving to URL: ${urlWithParams.toString()}`);
+    console.log("Settings payload:", JSON.stringify(settings, null, 2));
 
-  const headers: Record<string, string> = {
-    'Accept': 'application/json'
+    // Use our apiRequest utility for consistent handling
+    const response = await apiRequest(
+      'PUT', 
+      urlWithParams.toString(), 
+      settings,  // Send the full settings object
+      token
+    );
+    
+    if (!response.ok) {
+      console.error('Failed to save settings:', response.status);
+      const errorText = await response.text().catch(() => 'No error details available');
+      throw new Error(`Failed to save settings (${response.status}): ${errorText}`);
+    }
+
+    const updatedSettings = await response.json();
+    console.log('Settings saved successfully:', updatedSettings);
+
+    return updatedSettings;
+  } catch (error) {
+    console.error("Error saving settings:", error);
+    // Rethrow the error with additional context if needed
+    if (error instanceof Error) {
+      throw new Error(`Error updating settings for instance ${settings.instanceId}: ${error.message}`);
+    }
+    throw error;
   }
-
-  if (token) {
-    headers['Authorization'] = `Instance ${token}`
-  }
-
-  const response = await fetch(fullUrl, {
-    method: 'GET',
-    headers
-  })
-
-  if (!response.ok) {
-    throw new Error(`Failed to save settings: ${response.status}`)
-  }
-
-  const updatedSettings = await response.json()
-
-  return updatedSettings
 }

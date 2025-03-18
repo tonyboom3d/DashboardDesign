@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/accordion';
 
 export const CustomizationCard: React.FC = () => {
-  const { state } = useSettings();
+  const { state, updateSettings } = useSettings();
   const settings = state.settings || {};
   const backgroundColor = settings.colors?.backgroundColor || '#FFFFFF';
 

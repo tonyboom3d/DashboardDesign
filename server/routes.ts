@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertShippingBarSettingsSchema, updateShippingBarSettingsSchema, defaultShippingBarSettings } from "@shared/schema";
 import { z } from "zod";
+// Use the minimal implementation for faster startup
+import { WixAuthCredentials, syncSettingsWithWix } from "./wix-api-minimal";
 
 // Middleware to validate Wix integration tokens
 function validateWixToken(req: Request, res: Response, next: NextFunction) {
@@ -223,6 +225,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       console.log(`[Wix API] Fetching settings for instance: ${instanceId}`);
+
+      // Get token from request if available
+      const authHeader = req.headers.authorization;
+      let accessToken = null;
+      let refreshToken = null;
+      
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        accessToken = authHeader.substring(7);
+        console.log('[Wix API] Received access token in Authorization header');
+        
+        // Try to extract refresh token if sent in a custom header
+        if (req.headers['x-refresh-token']) {
+          refreshToken = req.headers['x-refresh-token'] as string;
+          console.log('[Wix API] Received refresh token in X-Refresh-Token header');
+        }
+      }
       
       // Get settings from storage
       let settings = await storage.getSettingsByInstanceId(instanceId);
@@ -231,13 +249,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!settings) {
         const defaultSettings = {
           ...defaultShippingBarSettings,
-          instanceId
+          instanceId,
+          accessToken,
+          refreshToken
         };
         
         settings = await storage.createSettings(defaultSettings);
+      } else if (accessToken) {
+        // Update tokens if they were provided
+        settings = await storage.updateSettings({
+          instanceId,
+          accessToken,
+          refreshToken
+        });
       }
       
-      return res.json(settings);
+      // Create response object with auth credentials
+      const response = settings ? {
+        ...settings,
+        auth: {
+          instanceId,
+          accessToken: settings.accessToken,
+          refreshToken: settings.refreshToken
+        }
+      } : {
+        instanceId,
+        auth: {
+          instanceId,
+          accessToken: null,
+          refreshToken: null
+        }
+      };
+      
+      return res.json(response);
     } catch (error) {
       console.error("[Wix API] Error fetching settings:", error);
       return res.status(500).json({ message: "Failed to fetch settings" });
@@ -281,6 +325,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
         
         settings = await storage.createSettings(newSettings);
+      }
+      
+      // Get token from request if available
+      const authHeader = req.headers.authorization;
+      let accessToken = null;
+      let refreshToken = null;
+      
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        accessToken = authHeader.substring(7);
+        console.log('[Wix API] Received access token in Authorization header');
+        
+        // Try to extract refresh token if sent in a custom header
+        if (req.headers['x-refresh-token']) {
+          refreshToken = req.headers['x-refresh-token'] as string;
+          console.log('[Wix API] Received refresh token in X-Refresh-Token header');
+        }
+      }
+      
+      // If we have a token and settings, try to sync with Wix CMS
+      if (settings && accessToken) {
+        try {
+          // Update tokens if they've changed
+          if (settings.accessToken !== accessToken || settings.refreshToken !== refreshToken) {
+            settings = await storage.updateSettings({
+              instanceId,
+              accessToken,
+              refreshToken
+            });
+          }
+          
+          // Create credentials for Wix API
+          const credentials: WixAuthCredentials = {
+            instanceId,
+            accessToken,
+            refreshToken
+          };
+          
+          // Sync settings with Wix CMS
+          const syncedSettings = await syncSettingsWithWix(settings, credentials);
+          
+          // Update local storage with any changes from Wix
+          if (syncedSettings && syncedSettings !== settings) {
+            settings = await storage.updateSettings({
+              instanceId: syncedSettings.instanceId,
+              enabled: syncedSettings.enabled,
+              threshold: syncedSettings.threshold
+              // Only update fields that are safe to update
+            });
+          }
+        } catch (syncError) {
+          console.error('[Wix API] Error syncing with Wix CMS:', syncError);
+          // Continue with local settings
+        }
       }
       
       console.log(`[Wix API] Settings updated successfully for instance: ${instanceId}`);

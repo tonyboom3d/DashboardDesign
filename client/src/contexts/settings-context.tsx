@@ -105,51 +105,70 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       if (!instanceId) {
         console.error("Instance ID is required but not found");
+        // Use a default or test instance ID if none is provided
+        const defaultId = 'b12bfa15-eed5-4bc1-a70e-ce6d3ab17f9c';
+        console.log(`Using default instance ID: ${defaultId}`);
+        
+        // Update state with default settings
+        setState(prevState => ({
+          ...prevState,
+          settings: {
+            ...defaultSettings,
+            instanceId: defaultId
+          },
+          isLoading: false
+        }));
+        setLoading(false);
         return;
       }
 
       try {
         const instanceToken = new URLSearchParams(window.location.search).get('token');
-        console.log(`Fetching settings for instance ID: ${instanceId} with token: ${instanceToken}`);
+        console.log(`Fetching settings for instance ID: ${instanceId} with token: ${instanceToken ? 'present' : 'not present'}`);
 
-        setTimeout(async () => {
-          const settings = await fetchSettings(instanceId, instanceToken);
-          setState(prevState => ({
-            ...prevState,
-            settings: {
-              ...defaultSettings,
-              ...settings,
-              instanceId
-            },
-            isLoading: false,
-            isDirty: false
-          }));
-          setLoading(false);
-          console.log(`Settings loaded successfully for instance: ${instanceId}`);
-        }, 3000);
-      } catch (error) {
-        console.error('Failed to load settings:', error);
+        // Remove the artificial timeout which was just causing delays
+        const settings = await fetchSettings(instanceId, instanceToken);
         setState(prevState => ({
           ...prevState,
+          settings: {
+            ...defaultSettings,
+            ...settings,
+            instanceId
+          },
           isLoading: false,
-          error: 'Failed to load settings'
+          isDirty: false,
+          error: null // Clear any previous errors
         }));
+        setLoading(false);
+        console.log(`Settings loaded successfully for instance: ${instanceId}`);
+      } catch (error) {
+        console.error('Failed to load settings:', error);
+        
+        // Use default settings with the instance ID on error
+        setState(prevState => ({
+          ...prevState,
+          settings: {
+            ...defaultSettings,
+            instanceId: instanceId
+          },
+          isLoading: false,
+          error: error instanceof Error ? error.message : 'Failed to load settings'
+        }));
+        setLoading(false);
+        
         toast({
-          title: 'Error',
-          description: 'Failed to load settings. Using default configuration.',
+          title: 'Warning',
+          description: 'Could not load existing settings. Using default configuration.',
           variant: 'destructive',
         });
       }
     };
 
-    let didCancel = false;
+    loadSettings();
 
-    if (!didCancel) {
-      loadSettings();
-    }
-
+    // Cleanup function
     return () => {
-      didCancel = true;
+      // Nothing to clean up
     };
   }, [instanceId, toast]);
 
@@ -169,23 +188,54 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         throw new Error('No instanceId provided in settings');
       }
       
+      setState(prevState => ({
+        ...prevState,
+        isLoading: true, // Show loading state while saving
+        error: null // Clear any previous errors
+      }));
+      
+      // Make the API call to save settings
       const savedSettings = await apiSaveSettings(completeSettings);
+      
+      // Show success toast
+      toast({
+        title: 'Success',
+        description: 'Settings saved successfully!',
+        variant: 'default',
+      });
       
       // Update local state with the saved settings
       setState(prevState => ({
         ...prevState,
         settings: savedSettings,
-        isDirty: false
+        isDirty: false,
+        isLoading: false
       }));
       
       return savedSettings;
     } catch (error) {
       console.error('Failed to save settings:', error);
+      
+      // Show error toast
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to save settings',
+        variant: 'destructive',
+      });
+      
+      // Update error state
+      setState(prevState => ({
+        ...prevState,
+        isLoading: false,
+        error: error instanceof Error ? error.message : 'Failed to save settings'
+      }));
+      
       throw error;
     }
   };
 
-const updateSettings = (newSettings: Partial<ShippingBarSettings>) => {
+  // Update settings with partial data
+  const updateSettings = (newSettings: Partial<ShippingBarSettings>) => {
     setState(prevState => ({
       ...prevState,
       settings: {
@@ -196,12 +246,70 @@ const updateSettings = (newSettings: Partial<ShippingBarSettings>) => {
     }));
   };
 
+  // Update preview state with partial data
+  const updatePreview = (newPreview: Partial<PreviewState>) => {
+    setState(prevState => ({
+      ...prevState,
+      preview: {
+        ...prevState.preview,
+        ...newPreview
+      }
+    }));
+  };
+
+  // Add a product to recommended products
+  const addProduct = (product: Product) => {
+    if (!product.id) {
+      console.error("Product must have an ID");
+      return;
+    }
+
+    setState(prevState => {
+      // Check if product already exists
+      const exists = prevState.settings.recommendedProducts.some(p => p.id === product.id);
+      
+      if (exists) {
+        console.log(`Product with ID ${product.id} already exists in recommended products`);
+        return prevState; // Return previous state without changes
+      }
+      
+      // Add the new product
+      return {
+        ...prevState,
+        settings: {
+          ...prevState.settings,
+          recommendedProducts: [...prevState.settings.recommendedProducts, product]
+        },
+        isDirty: true
+      };
+    });
+  };
+
+  // Remove a product from recommended products
+  const removeProduct = (productId: string) => {
+    setState(prevState => ({
+      ...prevState,
+      settings: {
+        ...prevState.settings,
+        recommendedProducts: prevState.settings.recommendedProducts.filter(p => p.id !== productId)
+      },
+      isDirty: true
+    }));
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-      <SettingsContext.Provider value={{ state, updateSettings, saveSettings }}>
+    <SettingsContext.Provider value={{ 
+      state, 
+      updateSettings, 
+      saveSettings,
+      updatePreview,
+      addProduct,
+      removeProduct
+    }}>
       {children}
     </SettingsContext.Provider>
   );
