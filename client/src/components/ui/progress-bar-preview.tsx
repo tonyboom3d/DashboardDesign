@@ -146,9 +146,9 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
       {progressBarElement}
       {settings.textPosition === 'below' && messageContent}
 
-      {settings.recommendedProducts.length > 0 && (
+      {settings.recommendedProducts && settings.recommendedProducts.length > 0 && (
         <div className="mt-3 grid grid-cols-2 gap-2">
-          {settings.recommendedProducts.slice(0, 2).map(product => (
+          {settings.recommendedProducts.map(product => (
             <div key={product.id} className="border rounded-md p-2 flex items-center space-x-2" style={{ borderColor: settings.border.color }}>
               <img src={product.imageUrl} alt={product.name} className="h-10 w-10 object-cover rounded" />
               <div className="flex-1 min-w-0">
