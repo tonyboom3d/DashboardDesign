@@ -93,14 +93,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let accessToken = null;
       let refreshToken = null;
 
+      console.log('[Wix Products API] Request received:', {
+        instanceId,
+        filter,
+        sort,
+        limit,
+        offset,
+        hasAuthHeader: !!authHeader
+      });
+
       if (!instanceId) {
+        console.log('[Wix Products API] No instance ID provided');
         return res.status(400).json({ message: "Instance ID is required" });
       }
 
       let settings = await storage.getSettingsByInstanceId(instanceId);
+      console.log('[Wix Products API] Settings retrieved:', {
+        hasSettings: !!settings,
+        hasAccessToken: !!settings?.accessToken,
+        hasRefreshToken: !!settings?.refreshToken
+      });
       
       if (!settings?.accessToken) {
+        console.log('[Wix Products API] No access token in settings');
         return res.status(401).json({ message: "No access token available" });
+      }
+
+      // Try to use token from authorization header first
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        accessToken = authHeader.substring(7);
+        console.log('[Wix Products API] Using token from Authorization header');
+      } else {
+        // Fall back to stored token
+        accessToken = settings.accessToken;
+        console.log('[Wix Products API] Using token from stored settings');
       }
 
       try {
@@ -159,10 +185,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { id: "5", name: "Handmade Soap", price: 799, imageUrl: "https://images.unsplash.com/photo-1613333835718-9b8b24e92939?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" },
       ];
 
+      console.log('[Wix Products API] Returning sample products');
       return res.json({ products: sampleProducts });
     } catch (error) {
-      console.error("Error fetching Wix products:", error);
-      return res.status(500).json({ message: "Failed to fetch products" });
+      console.error("[Wix Products API] Error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      console.error("[Wix Products API] Full error details:", {
+        message: errorMessage,
+        stack: error instanceof Error ? error.stack : undefined,
+        instanceId,
+        hasAccessToken: !!accessToken
+      });
+      return res.status(500).json({ message: "Failed to fetch products", error: errorMessage });
     }
   });
 
