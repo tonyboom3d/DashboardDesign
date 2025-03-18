@@ -1,0 +1,170 @@
+{
+  "products": [
+    {
+      "id": "35bb39e5-83aa-4930-b5c4-54db7b886a6e",
+      "revision": "1",
+      "createdDate": "2025-01-01T13:43:49.222Z",
+      "updatedDate": "2025-01-01T13:43:51.660Z",
+      "name": "Chocolate bar",
+      "slug": "chocolate-bar-6",
+      "url": null,
+      "description": null,
+      "plainDescription": null,
+      "visible": false,
+      "visibleInPos": true,
+      "media": {
+        "main": null,
+        "itemsInfo": null
+      },
+      "seoData": null,
+      "taxGroupId": null,
+      "options": [],
+      "modifiers": [],
+      "brand": null,
+      "infoSections": [],
+      "ribbon": null,
+      "directCategoriesInfo": null,
+      "allCategoriesInfo": null,
+      "mainCategoryId": "1aecdc65-176f-4f07-a846-77a8d5079eb5",
+      "directCategoryIdsInfo": null,
+      "costRange": null,
+      "inventory": {
+        "preorderAvailability": "NO_VARIANTS",
+        "availabilityStatus": "OUT_OF_STOCK",
+        "preorderStatus": "DISABLED"
+      },
+      "productType": "PHYSICAL",
+      "physicalProperties": {
+        "pricePerUnit": null,
+        "fulfillerId": null,
+        "shippingGroupId": null,
+        "shippingWeightRange": null,
+        "pricePerUnitRange": null,
+        "weightMeasurementUnitInfo": null,
+        "deliveryProfileId": null
+      },
+      "handle": "Product_9e11b825-593c-4246-9ea9-cf48aec71361",
+      "currency": null,
+      "breadcrumbsInfo": null,
+      "actualPriceRange": {
+        "minValue": {
+          "amount": "6",
+          "formattedAmount": null
+        },
+        "maxValue": {
+          "amount": "6",
+          "formattedAmount": null
+        }
+      },
+      "compareAtPriceRange": {
+        "minValue": {
+          "amount": "7",
+          "formattedAmount": null
+        },
+        "maxValue": {
+          "amount": "7",
+          "formattedAmount": null
+        }
+      },
+      "variantsInfo": null,
+      "subscriptionDetails": null,
+      "extendedFields": null,
+      "seoTitle": null,
+      "seoDescription": null,
+      "numericId": "1735739029162001",
+      "flattenOptions": [],
+      "flattenModifiers": [],
+      "variantSummary": {
+        "variantCount": 1
+      },
+      "minVariantPriceInfo": null
+    },
+    {
+      "id": "dd093852-35c6-4e09-a22c-4a5f175b2b1c",
+      "revision": "1",
+      "createdDate": "2025-01-01T13:43:49.222Z",
+      "updatedDate": "2025-01-01T13:43:52.324Z",
+      "name": "Coffee",
+      "slug": "coffee-3",
+      "url": null,
+      "description": null,
+      "plainDescription": null,
+      "visible": true,
+      "visibleInPos": true,
+      "media": {
+        "main": null,
+        "itemsInfo": null
+      },
+      "seoData": null,
+      "taxGroupId": null,
+      "options": [],
+      "modifiers": [],
+      "brand": null,
+      "infoSections": [],
+      "ribbon": null,
+      "directCategoriesInfo": null,
+      "allCategoriesInfo": null,
+      "mainCategoryId": "1aecdc65-176f-4f07-a846-77a8d5079eb5",
+      "directCategoryIdsInfo": null,
+      "costRange": null,
+      "inventory": {
+        "preorderAvailability": "NO_VARIANTS",
+        "availabilityStatus": "OUT_OF_STOCK",
+        "preorderStatus": "DISABLED"
+      },
+      "productType": "PHYSICAL",
+      "physicalProperties": {
+        "pricePerUnit": null,
+        "fulfillerId": null,
+        "shippingGroupId": null,
+        "shippingWeightRange": null,
+        "pricePerUnitRange": null,
+        "weightMeasurementUnitInfo": null,
+        "deliveryProfileId": null
+      },
+      "handle": "Product_33ea6950-e6e3-4155-9ef6-8f4a90022a94",
+      "currency": null,
+      "breadcrumbsInfo": null,
+      "actualPriceRange": {
+        "minValue": {
+          "amount": "10",
+          "formattedAmount": null
+        },
+        "maxValue": {
+          "amount": "10",
+          "formattedAmount": null
+        }
+      },
+      "compareAtPriceRange": {
+        "minValue": {
+          "amount": "10",
+          "formattedAmount": null
+        },
+        "maxValue": {
+          "amount": "10",
+          "formattedAmount": null
+        }
+      },
+      "variantsInfo": null,
+      "subscriptionDetails": null,
+      "extendedFields": null,
+      "seoTitle": null,
+      "seoDescription": null,
+      "numericId": "1735739029162000",
+      "flattenOptions": [],
+      "flattenModifiers": [],
+      "variantSummary": {
+        "variantCount": 1
+      },
+      "minVariantPriceInfo": null
+    }
+  ],
+  "pagingMetadata": {
+    "count": 2,
+    "cursors": {
+      "next": null,
+      "prev": null
+    },
+    "hasNext": false
+  }
+}
