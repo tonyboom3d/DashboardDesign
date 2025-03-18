@@ -89,7 +89,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
     messageContent = (
       <div 
         className={cn(
-          "flex items-center",
+          "flex items-center flex-wrap min-w-0",
           // Only add margin-bottom if text position is above
           settings.textPosition === 'above' && "mb-2",
           // Only add margin-top if text position is below
