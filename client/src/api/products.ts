@@ -42,7 +42,7 @@ export async function fetchProducts(query?: string): Promise<Product[]> {
 }
 
 // Fetch products from Wix store
-export async function fetchWixProducts(instanceId: string, limit: string = "100", filter?: string, settings?: any): Promise<Product[]> {
+export async function fetchWixProducts(instanceId: string, limit: string = "50", filter?: string, settings?: any): Promise<Product[]> {
   const url = `https://www.wixapis.com/stores/v3/products/query`; // Corrected Wix API endpoint
 
   console.log('[Wix Products API] Fetching products:', { url, instanceId, limit, filter });
@@ -59,11 +59,11 @@ export async function fetchWixProducts(instanceId: string, limit: string = "100"
     const requestBody = {
       dataCollectionId: "Stores/Products",
       query: {
-        paging: {
-          limit: Math.min(Number(limit), 100),
-          offset: 0
-        },
-        filter: filter ? JSON.parse(filter) : undefined
+        // paging: {
+        //   limit: Math.min(Number(limit), 100),
+        //   offset: 0
+        // },
+        // filter: filter ? JSON.parse(filter) : undefined
       },
       returnTotalCount: false,
       consistentRead: false
