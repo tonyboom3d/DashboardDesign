@@ -97,21 +97,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Instance ID is required" });
       }
 
-      // Try to get token from Authorization header
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        accessToken = authHeader.substring(7);
-        refreshToken = req.headers['x-refresh-token'] as string;
-      } else {
-        // Fallback to getting tokens from settings
-        const settings = await storage.getSettingsByInstanceId(instanceId);
-        if (settings?.accessToken) {
-          accessToken = settings.accessToken;
-          refreshToken = settings.refreshToken;
-        }
+      let settings = await storage.getSettingsByInstanceId(instanceId);
+      
+      if (!settings?.accessToken) {
+        return res.status(401).json({ message: "No access token available" });
       }
 
-      if (!accessToken) {
-        return res.status(401).json({ message: "No access token available" });
+      try {
+        // Try to use existing access token
+        accessToken = settings.accessToken;
+      } catch (error) {
+        // If token is invalid, try to refresh it
+        if (settings.refreshToken) {
+          try {
+            const response = await fetch('https://www.wixapis.com/oauth/access', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                grant_type: 'refresh_token',
+                client_id: process.env.WIX_APP_ID,
+                client_secret: process.env.WIX_APP_SECRET,
+                refresh_token: settings.refreshToken
+              })
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              accessToken = data.access_token;
+              
+              // Update stored access token
+              settings = await storage.updateSettings({
+                instanceId,
+                accessToken: data.access_token
+              });
+            } else {
+              return res.status(401).json({ message: "Failed to refresh access token" });
+            }
+          } catch (refreshError) {
+            console.error('Error refreshing token:', refreshError);
+            return res.status(401).json({ message: "Error refreshing access token" });
+          }
+        } else {
+          return res.status(401).json({ message: "No refresh token available" });
+        }
       }
 
       const credentials: WixAuthCredentials = {
