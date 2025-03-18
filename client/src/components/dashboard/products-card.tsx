@@ -24,6 +24,29 @@ export const ProductsCard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
+  // Fetch products when component mounts
+  useEffect(() => {
+    console.log('[Products Card] Initial products fetch');
+    const initialFetch = async () => {
+      setIsSearching(true);
+      try {
+        const products = await fetchWixProducts('');
+        console.log('[Products Card] Initial products loaded:', products);
+        setSearchResults(products);
+      } catch (error) {
+        console.error('[Products Card] Error loading initial products:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load products',
+          variant: 'destructive'
+        });
+      } finally {
+        setIsSearching(false);
+      }
+    };
+    initialFetch();
+  }, []);
+
   // Handle product suggestion method change
   const handleSuggestionMethodChange = (value: string) => {
     updateSettings({ 
