@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { insertShippingBarSettingsSchema, updateShippingBarSettingsSchema, defaultShippingBarSettings } from "@shared/schema";
 import { z } from "zod";
 // Use the minimal implementation for faster startup
-import { WixAuthCredentials, syncSettingsWithWix } from "./wix-api-minimal";
+import { WixAuthCredentials, syncSettingsWithWix, queryWixProducts } from "./wix-api-minimal";
 
 // Middleware to validate Wix integration tokens
 function validateWixToken(req: Request, res: Response, next: NextFunction) {
@@ -80,6 +80,12 @@ function getInstanceId(req: Request): string | undefined {
 
 
   // Query Wix store products
+  // This code will be moved inside the registerRoutes function below
+
+
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Query Wix store products
   app.get("/api/wix-products", async (req: Request, res: Response) => {
     try {
       const { filter, sort, limit, offset } = req.query;
@@ -116,9 +122,6 @@ function getInstanceId(req: Request): string | undefined {
     }
   });
 
-
-
-export async function registerRoutes(app: Express): Promise<Server> {
   // Enable CORS for Wix domains
   app.use((req, res, next) => {
     const allowedOrigins = [
