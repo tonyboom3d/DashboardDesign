@@ -16,20 +16,20 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
 }) => {
   const { currentCartValue } = previewState;
   const { threshold, enabled, colors, barStyle, text, textAlignment, textDirection, icon, position, progressBarBorder } = settings;
-  
+
   // Calculate progress percentage
   const progressPercentage = Math.min(Math.floor((currentCartValue / threshold) * 100), 100);
-  
+
   // Calculate remaining amount for free shipping
   const remainingAmount = Math.max(threshold - currentCartValue, 0);
   const remainingFormatted = (remainingAmount / 100).toFixed(2);
-  
+
   // Format the bar text with the remaining amount
   const formattedBarText = text.barText.replace('${remaining}', `${settings.currencySymbol || '$'}${remainingFormatted}`);
-  
+
   // Determine if the threshold has been reached
   const thresholdReached = currentCartValue >= threshold;
-  
+
   // If the bar is disabled, render a disabled message (for preview only)
   if (!enabled) {
     return (
@@ -44,10 +44,10 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
       </div>
     );
   }
-  
+
   // Define the component to render based on context
   let messageContent;
-  
+
   if (thresholdReached) {
     // Success message when threshold is reached
     messageContent = (
@@ -89,7 +89,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
     messageContent = (
       <div 
         className={cn(
-          "flex items-center flex-wrap min-w-0",
+          "flex items-center flex-wrap break-words w-full",
           // Only add margin-bottom if text position is above
           settings.textPosition === 'above' && "mb-2",
           // Only add margin-top if text position is below
@@ -110,7 +110,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
       </div>
     );
   }
-  
+
   // Create the progress bar element that can be reordered based on text position
   const progressBarElement = (
     <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: colors.progressBg }}>
@@ -122,7 +122,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
           backgroundImage: barStyle === 'gradient' 
             ? `linear-gradient(${settings.progressDirection === 'rtl' ? 'to left' : 'to right'}, ${colors.bar}, ${colors.gradientEnd || colors.highlight})` 
             : 'none',
-          border: progressBarBorder.thickness > 0 ? `${progressBarBorder.thickness}px solid ${progressBarBorder.color}` : 'none',
+          border: progressBarBorder.thickness > 0 ? `${progressBarBorder.thickness}px solid ${settings.progressBarBorder.color}` : 'none',
           // For RTL direction, position the progress bar from the right side
           ...(settings.progressDirection === 'rtl' ? { 
             marginLeft: 'auto',
@@ -132,7 +132,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
       />
     </div>
   );
-  
+
   const contentToRender = thresholdReached ? (
     messageContent
   ) : (
@@ -141,7 +141,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
       {settings.textPosition === 'above' && messageContent}
       {progressBarElement}
       {settings.textPosition === 'below' && messageContent}
-      
+
       {settings.recommendedProducts.length > 0 && (
         <div className="mt-3 grid grid-cols-2 gap-2">
           {settings.recommendedProducts.slice(0, 2).map(product => (
@@ -167,11 +167,11 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
       )}
     </div>
   );
-  
+
   return (
     <div 
       className={cn(
-        "overflow-hidden w-full",
+        "overflow-hidden w-full sticky top-0 z-10",
         className
       )}
       style={{ 
