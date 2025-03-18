@@ -85,7 +85,6 @@ function getInstanceId(req: Request): string | undefined {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Query Wix store products
-  export function setupRoutes(app: Express) {
   app.get("/api/wix-products", async (req: Request, res: Response) => {
     try {
       const { filter, sort, limit, offset } = req.query;
