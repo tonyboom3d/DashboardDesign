@@ -61,7 +61,8 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
           backgroundColor: colors.accent + '20', // Light version of accent color
           borderColor: colors.accent,
           color: colors.accent,
-          textAlign: textAlignment
+          textAlign: textAlignment,
+          direction: settings.textDirection
         }}
       >
         {text.successText}
@@ -77,7 +78,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
           textAlignment === 'right' && "justify-end",
           textDirection === 'rtl' ? 'rtl' : 'ltr'
         )}
-        style={{ color: colors.text }}
+        style={{ color: colors.text, direction: settings.textDirection }}
       >
         {icon.type === 'emoji' && icon.position === 'before' && <span className="mr-2">{icon.selection}</span>}
         <span>{text.initialText}</span>
@@ -98,7 +99,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
           textAlignment === 'right' && "justify-end",
           textDirection === 'rtl' ? 'rtl' : 'ltr'
         )}
-        style={{ color: colors.text }}
+        style={{ color: colors.text, direction: settings.textDirection }}
       >
         {icon.type === 'emoji' && icon.position === 'before' && <span className="mr-2">{icon.selection}</span>}
         <span>
