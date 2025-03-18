@@ -24,6 +24,11 @@ export const ProductsCard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>(settings.recommendedProducts || []);
+
+  useEffect(() => {
+    setSelectedProducts(settings.recommendedProducts || []);
+  }, [settings.recommendedProducts]);
   
   // Handle product suggestion method change
   const handleSuggestionMethodChange = (value: string) => {
@@ -60,14 +65,18 @@ export const ProductsCard: React.FC = () => {
   
   // Handle add product
   const handleAddProduct = (product: Product) => {
-    addProduct(product);
+    const updatedProducts = [...selectedProducts, product];
+    setSelectedProducts(updatedProducts);
+    updateSettings({ recommendedProducts: updatedProducts });
     setSearchResults([]);
     setSearchTerm('');
   };
   
   // Handle remove product
   const handleRemoveProduct = (productId: string) => {
-    removeProduct(productId);
+    const updatedProducts = selectedProducts.filter(p => p.id !== productId);
+    setSelectedProducts(updatedProducts);
+    updateSettings({ recommendedProducts: updatedProducts });
   };
   
   return (
