@@ -95,53 +95,38 @@ export const GeneralSettingsCard: React.FC = () => {
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                <div>
-                  <Label htmlFor="currencySymbol" className="block font-medium text-gray-700 mb-1">Currency Symbol</Label>
-                  <Select 
-                    value={settings.currencySymbol || '$'} 
-                    onValueChange={handleCurrencySymbolChange}
-                  >
-                    <SelectTrigger id="currencySymbol" className="w-full">
-                      <SelectValue placeholder="Select symbol" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="$">$ (Dollar)</SelectItem>
-                      <SelectItem value="€">€ (Euro)</SelectItem>
-                      <SelectItem value="£">£ (Pound)</SelectItem>
-                      <SelectItem value="¥">¥ (Yen/Yuan)</SelectItem>
-                      <SelectItem value="₹">₹ (Rupee)</SelectItem>
-                      <SelectItem value="₽">₽ (Ruble)</SelectItem>
-                      <SelectItem value="₩">₩ (Won)</SelectItem>
-                      <SelectItem value="A$">A$ (Australian Dollar)</SelectItem>
-                      <SelectItem value="C$">C$ (Canadian Dollar)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="currencyCode" className="block font-medium text-gray-700 mb-1">Currency Code</Label>
-                  <Select 
-                    value={settings.currencyCode || 'USD'} 
-                    onValueChange={handleCurrencyCodeChange}
-                  >
-                    <SelectTrigger id="currencyCode" className="w-full">
-                      <SelectValue placeholder="Select currency" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="USD">USD (US Dollar)</SelectItem>
-                      <SelectItem value="EUR">EUR (Euro)</SelectItem>
-                      <SelectItem value="GBP">GBP (British Pound)</SelectItem>
-                      <SelectItem value="JPY">JPY (Japanese Yen)</SelectItem>
-                      <SelectItem value="CNY">CNY (Chinese Yuan)</SelectItem>
-                      <SelectItem value="INR">INR (Indian Rupee)</SelectItem>
-                      <SelectItem value="RUB">RUB (Russian Ruble)</SelectItem>
-                      <SelectItem value="KRW">KRW (South Korean Won)</SelectItem>
-                      <SelectItem value="AUD">AUD (Australian Dollar)</SelectItem>
-                      <SelectItem value="CAD">CAD (Canadian Dollar)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="pt-4">
+                <Label htmlFor="currencySymbol" className="block font-medium text-gray-700 mb-1">Currency Symbol</Label>
+                <Select 
+                  value={settings.currencySymbol || '$'} 
+                  onValueChange={handleCurrencySymbolChange}
+                >
+                  <SelectTrigger id="currencySymbol" className="w-full">
+                    <SelectValue placeholder="Select symbol" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="$">$ (Dollar)</SelectItem>
+                    <SelectItem value="€">€ (Euro)</SelectItem>
+                    <SelectItem value="£">£ (Pound)</SelectItem>
+                    <SelectItem value="¥">¥ (Yen/Yuan)</SelectItem>
+                    <SelectItem value="₹">₹ (Rupee)</SelectItem>
+                    <SelectItem value="₽">₽ (Ruble)</SelectItem>
+                    <SelectItem value="₩">₩ (Won)</SelectItem>
+                    <SelectItem value="A$">A$ (Australian Dollar)</SelectItem>
+                    <SelectItem value="C$">C$ (Canadian Dollar)</SelectItem>
+                    <SelectItem value="฿">฿ (Thai Baht)</SelectItem>
+                    <SelectItem value="₫">₫ (Vietnamese Dong)</SelectItem>
+                    <SelectItem value="₱">₱ (Philippine Peso)</SelectItem>
+                    <SelectItem value="R$">R$ (Brazilian Real)</SelectItem>
+                    <SelectItem value="₪">₪ (Israeli Shekel)</SelectItem>
+                    <SelectItem value="₺">₺ (Turkish Lira)</SelectItem>
+                    <SelectItem value="kr">kr (Swedish/Danish/Norwegian Krona)</SelectItem>
+                    <SelectItem value="zł">zł (Polish Złoty)</SelectItem>
+                    <SelectItem value="R">R (South African Rand)</SelectItem>
+                    <SelectItem value="CHF">CHF (Swiss Franc)</SelectItem>
+                    <SelectItem value="Mex$">Mex$ (Mexican Peso)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </AccordionContent>
           </AccordionItem>

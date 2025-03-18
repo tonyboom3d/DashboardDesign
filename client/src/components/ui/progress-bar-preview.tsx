@@ -156,7 +156,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
   return (
     <div 
       className={cn(
-        "overflow-hidden",
+        "overflow-hidden w-full",
         className
       )}
       style={{ 

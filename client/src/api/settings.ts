@@ -7,13 +7,16 @@ import { WIX_CONFIG } from "@/config/wix-config";
  * depending on configuration and environment
  */
 export async function fetchSettings(
-  instanceId: string, 
+  instanceId?: string | null, 
   token?: string | null
 ): Promise<ShippingBarSettings> {
-  console.log(`Fetching settings for instanceId: ${instanceId}`);
+  // Use default instance ID if none provided
+  const effectiveInstanceId = instanceId || WIX_CONFIG.DEFAULT_INSTANCE;
+  
+  console.log(`Fetching settings for instanceId: ${effectiveInstanceId}`);
 
-  if (!instanceId) {
-    console.error("No instanceId provided for fetchSettings");
+  if (!effectiveInstanceId) {
+    console.error("No instanceId provided for fetchSettings and no default available");
     throw new Error("Instance ID is required");
   }
   
@@ -22,7 +25,7 @@ export async function fetchSettings(
     const url = WIX_CONFIG.ENDPOINTS.GET_SETTINGS;
     const fullUrl = `${WIX_CONFIG.API_BASE_URL}${url}`;
     const urlWithParams = new URL(fullUrl, window.location.origin);
-    urlWithParams.searchParams.append('instanceId', instanceId);
+    urlWithParams.searchParams.append('instanceId', effectiveInstanceId);
     
     console.log(`Fetching from URL: ${urlWithParams.toString()}`);
 
@@ -51,7 +54,7 @@ export async function fetchSettings(
       console.log("Settings not found, returning default settings");
       // Return default settings with the provided instanceId
       return {
-        instanceId,
+        instanceId: effectiveInstanceId,
         enabled: false,
         threshold: 5000, // $50.00 in cents
         // Other default properties would be here...

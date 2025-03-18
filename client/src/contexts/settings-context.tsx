@@ -3,6 +3,7 @@ import { ShippingBarSettings, SettingsContextType, SettingsState, PreviewState, 
 import { fetchSettings, saveSettings as apiSaveSettings } from '@/api/settings';
 import { useIframeParams } from '@/hooks/use-iframe-params';
 import { useToast } from '@/hooks/use-toast';
+import { WIX_CONFIG } from '@/config/wix-config';
 
 
 // Default settings
@@ -109,23 +110,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const loadSettings = async () => {
       console.log("Starting to load settings", instanceId);
 
+      // Use a default instance ID if none is provided from Wix
+      const defaultId = WIX_CONFIG.DEFAULT_INSTANCE;
+      const effectiveInstanceId = instanceId || defaultId;
+      
       if (!instanceId) {
-        console.error("Instance ID is required but not found");
-        // Use a default or test instance ID if none is provided
-        const defaultId = 'b12bfa15-eed5-4bc1-a70e-ce6d3ab17f9c';
         console.log(`Using default instance ID: ${defaultId}`);
-        
-        // Update state with default settings
-        setState(prevState => ({
-          ...prevState,
-          settings: {
-            ...defaultSettings,
-            instanceId: defaultId
-          },
-          isLoading: false
-        }));
-        setLoading(false);
-        return;
       }
 
       try {
@@ -133,13 +123,13 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         console.log(`Fetching settings for instance ID: ${instanceId} with token: ${instanceToken ? 'present' : 'not present'}`);
 
         // Remove the artificial timeout which was just causing delays
-        const settings = await fetchSettings(instanceId, instanceToken);
+        const settings = await fetchSettings(effectiveInstanceId, instanceToken);
         setState(prevState => ({
           ...prevState,
           settings: {
             ...defaultSettings,
             ...settings,
-            instanceId
+            instanceId: effectiveInstanceId
           },
           isLoading: false,
           isDirty: false,
@@ -155,7 +145,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           ...prevState,
           settings: {
             ...defaultSettings,
-            instanceId: instanceId
+            instanceId: effectiveInstanceId
           },
           isLoading: false,
           error: error instanceof Error ? error.message : 'Failed to load settings'
