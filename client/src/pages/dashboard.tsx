@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
       };
       
       // Log the full settings object we're about to save
-      console.log('Full settings object being sent:', JSON.stringify(completeSettings, null, 2));
+      console.log('[Dashboard Save] Full settings object being sent:', JSON.stringify(completeSettings, null, 2));
       
       // Pass the complete settings to save, ensuring instanceId is included
       const savedSettings = await saveSettings();
