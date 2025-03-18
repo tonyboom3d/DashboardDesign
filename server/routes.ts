@@ -89,22 +89,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { filter, sort, limit, offset } = req.query;
       const instanceId = req.query.instanceId as string;
+      const authHeader = req.headers.authorization;
+      let accessToken = null;
+      let refreshToken = null;
 
       if (!instanceId) {
         return res.status(400).json({ message: "Instance ID is required" });
       }
 
-      // Get settings to access tokens
-      const settings = await storage.getSettingsByInstanceId(instanceId);
+      // Try to get token from Authorization header
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        accessToken = authHeader.substring(7);
+        refreshToken = req.headers['x-refresh-token'] as string;
+      } else {
+        // Fallback to getting tokens from settings
+        const settings = await storage.getSettingsByInstanceId(instanceId);
+        if (settings?.accessToken) {
+          accessToken = settings.accessToken;
+          refreshToken = settings.refreshToken;
+        }
+      }
 
-      if (!settings?.accessToken) {
+      if (!accessToken) {
         return res.status(401).json({ message: "No access token available" });
       }
 
       const credentials: WixAuthCredentials = {
         instanceId,
-        accessToken: settings.accessToken,
-        refreshToken: settings.refreshToken
+        accessToken,
+        refreshToken
       };
 
       // Using mock products due to missing queryWixProducts implementation
