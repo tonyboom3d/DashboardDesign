@@ -15,7 +15,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
   className
 }) => {
   const { currentCartValue } = previewState;
-  const { threshold, enabled, colors, barStyle, text, textAlignment, textDirection, icon, position } = settings;
+  const { threshold, enabled, colors, barStyle, text, textAlignment, textDirection, icon, position, progressBarBorder } = settings;
   
   // Calculate progress percentage
   const progressPercentage = Math.min(Math.floor((currentCartValue / threshold) * 100), 100);
@@ -25,7 +25,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
   const remainingFormatted = (remainingAmount / 100).toFixed(2);
   
   // Format the bar text with the remaining amount
-  const formattedBarText = text.barText.replace('${remaining}', `$${remainingFormatted}`);
+  const formattedBarText = text.barText.replace('${remaining}', `${settings.currencySymbol || '$'}${remainingFormatted}`);
   
   // Determine if the threshold has been reached
   const thresholdReached = currentCartValue >= threshold;
@@ -98,9 +98,9 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
       >
         {icon.type === 'emoji' && icon.position === 'before' && <span className="mr-2">{icon.selection}</span>}
         <span>
-          <span className="text-sm">{formattedBarText.split('$' + remainingFormatted)[0]}</span>
-          <span className="font-medium" style={{ color: colors.highlight }}>${remainingFormatted}</span>
-          <span className="text-sm">{formattedBarText.split('$' + remainingFormatted)[1]}</span>
+          <span className="text-sm">{formattedBarText.split(`${settings.currencySymbol || '$'}${remainingFormatted}`)[0]}</span>
+          <span className="font-medium" style={{ color: colors.highlight }}>{settings.currencySymbol || '$'}{remainingFormatted}</span>
+          <span className="text-sm">{formattedBarText.split(`${settings.currencySymbol || '$'}${remainingFormatted}`)[1]}</span>
         </span>
         {icon.type === 'emoji' && icon.position === 'after' && <span className="ml-2">{icon.selection}</span>}
       </div>
@@ -119,8 +119,10 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
           style={{ 
             width: `${progressPercentage}%`,
             backgroundColor: barStyle === 'simple' ? colors.bar : 'none',
-            backgroundImage: barStyle === 'gradient' ? `linear-gradient(to right, ${colors.bar}, ${colors.highlight})` : 'none',
-            border: settings.border.thickness > 0 ? `${settings.border.thickness}px solid ${settings.border.color}` : 'none'
+            backgroundImage: barStyle === 'gradient' 
+              ? `linear-gradient(to right, ${colors.bar}, ${colors.gradientEnd || colors.highlight})` 
+              : 'none',
+            border: progressBarBorder.thickness > 0 ? `${progressBarBorder.thickness}px solid ${progressBarBorder.color}` : 'none'
           }}
         />
       </div>
@@ -132,7 +134,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
               <img src={product.imageUrl} alt={product.name} className="h-10 w-10 object-cover rounded" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium truncate" style={{ color: colors.text }}>{product.name}</p>
-                <p className="text-xs text-gray-500">${(product.price / 100).toFixed(2)}</p>
+                <p className="text-xs text-gray-500">{settings.currencySymbol || '$'}{(product.price / 100).toFixed(2)}</p>
               </div>
               <button 
                 type="button" 
@@ -158,7 +160,7 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
         className
       )}
       style={{ 
-        backgroundColor: colors.background,
+        backgroundColor: colors.backgroundColor,
         borderWidth: `${settings.border.thickness}px`,
         borderStyle: 'solid',
         borderColor: settings.border.color,

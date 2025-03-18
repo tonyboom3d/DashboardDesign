@@ -5,9 +5,15 @@ export interface ShippingBarColors {
   text: string;
   accent: string;
   highlight: string;
+  gradientEnd?: string; // Added for gradient secondary color
 }
 
 export interface ShippingBarBorder {
+  color: string;
+  thickness: number;
+}
+
+export interface ProgressBarBorder {
   color: string;
   thickness: number;
 }
@@ -55,10 +61,13 @@ export interface ShippingBarSettings {
   instanceId: string;
   enabled: boolean;
   threshold: number; // in cents
+  currencySymbol: string; // Added for currency symbol
+  currencyCode: string; // Added for currency code
   productSuggestionMethod: 'manual' | 'automatic' | 'bestselling' | 'related';
   barStyle: 'simple' | 'gradient';
   colors: ShippingBarColors;
   border: ShippingBarBorder;
+  progressBarBorder: ProgressBarBorder;
   text: ShippingBarText;
   textAlignment: 'left' | 'center' | 'right';
   textDirection: 'ltr' | 'rtl';

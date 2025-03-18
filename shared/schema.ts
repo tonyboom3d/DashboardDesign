@@ -20,10 +20,13 @@ export const shippingBarSettings = pgTable("shipping_bar_settings", {
   refreshToken: text("refresh_token"),
   enabled: boolean("enabled").default(true).notNull(),
   threshold: integer("threshold").default(5000).notNull(), // Stored in cents
+  currencySymbol: text("currency_symbol").default("$").notNull(),
+  currencyCode: text("currency_code").default("USD").notNull(),
   productSuggestionMethod: text("product_suggestion_method").default("manual").notNull(),
   barStyle: text("bar_style").default("simple").notNull(),
   colors: jsonb("colors").notNull(),
   border: jsonb("border").notNull(),
+  progressBarBorder: jsonb("progress_bar_border").notNull(),
   text: jsonb("text").notNull(),
   textAlignment: text("text_alignment").default("left").notNull(),
   textDirection: text("text_direction").default("ltr").notNull(),
@@ -43,24 +46,33 @@ export const shippingBarSettings = pgTable("shipping_bar_settings", {
 export const defaultShippingBarSettings = {
   enabled: true,
   threshold: 5000, // $50.00 in cents
+  currencySymbol: "$",
+  currencyCode: "USD",
   productSuggestionMethod: "manual",
   barStyle: "simple",
   colors: {
-    background: "#FFFFFF",
+    backgroundColor: "#FFFFFF",
     bar: "#0070F3",
     progressBg: "#E5E7EB",
     text: "#111827",
     accent: "#10B981",
-    highlight: "#F59E0B"
+    highlight: "#F59E0B",
+    gradientEnd: "#10B981" // Adding a secondary color for gradient
   },
   border: {
     color: "#E5E7EB",
     thickness: 1
   },
+  progressBarBorder: {
+    color: "#0070F3",
+    thickness: 1
+  },
   text: {
     barText: "Add ${remaining} more to get FREE shipping!",
-    successText: "🎉 Congratulations! You've qualified for FREE shipping!",
-    buttonText: "Add to Cart"
+    successText: "Congratulations! You've qualified for FREE shipping!",
+    buttonText: "Add to Cart",
+    initialText: "Start shopping to get FREE shipping!",
+    showInitialText: true
   },
   textAlignment: "left",
   textDirection: "ltr",

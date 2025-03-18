@@ -77,30 +77,30 @@ export const ProductsCard: React.FC = () => {
           <AccordionItem value="products" className="border rounded-lg px-4">
             <AccordionTrigger className="py-4 hover:no-underline">
               <div className="flex items-center justify-between w-full pr-4">
-                <h3 className="text-lg font-medium text-gray-900">מוצרים מומלצים</h3>
+                <h3 className="text-lg font-medium text-gray-900">Recommended Products</h3>
                 <div className="text-xs text-gray-500">
-                  {settings.recommendedProducts.length} מוצרים נבחרו
+                  {settings.recommendedProducts.length} products selected
                 </div>
               </div>
             </AccordionTrigger>
             
             <AccordionContent className="pt-2 pb-4 space-y-4">
-              <p className="text-sm text-gray-500 mb-4">בחר מוצרים שיוצעו ללקוחות כשהם קרובים לסף המשלוח החינם.</p>
+              <p className="text-sm text-gray-500 mb-4">Choose products to offer your customers when they're close to the free shipping threshold.</p>
               
               <div>
-                <Label htmlFor="productSuggestion" className="block font-medium text-gray-700 mb-1">שיטת בחירת מוצרים</Label>
+                <Label htmlFor="productSuggestion" className="block font-medium text-gray-700 mb-1">Product Selection Method</Label>
                 <Select 
                   value={settings.productSuggestionMethod} 
                   onValueChange={handleSuggestionMethodChange}
                 >
                   <SelectTrigger id="productSuggestion" className="w-full mb-4">
-                    <SelectValue placeholder="בחר שיטה" />
+                    <SelectValue placeholder="Select a method" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="manual">בחירה ידנית</SelectItem>
-                    <SelectItem value="automatic">אוטומטי (לפי מחיר)</SelectItem>
-                    <SelectItem value="bestselling">מוצרים הנמכרים ביותר</SelectItem>
-                    <SelectItem value="related">קשורים לפריטים בעגלה</SelectItem>
+                    <SelectItem value="manual">Manual Selection</SelectItem>
+                    <SelectItem value="automatic">Automatic (by price)</SelectItem>
+                    <SelectItem value="bestselling">Best Selling Products</SelectItem>
+                    <SelectItem value="related">Related to Cart Items</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -109,7 +109,7 @@ export const ProductsCard: React.FC = () => {
                 <div className="flex items-center">
                   <Input 
                     type="text" 
-                    placeholder="חפש מוצרים..."
+                    placeholder="Search products..."
                     value={searchTerm}
                     onChange={handleSearchChange}
                     className="rounded-l-md"
@@ -130,14 +130,14 @@ export const ProductsCard: React.FC = () => {
               {/* Search Results */}
               {searchResults.length > 0 && (
                 <div className="mb-4 border border-gray-200 rounded-md p-3">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">תוצאות חיפוש</h3>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">Search Results</h3>
                   <div className="space-y-2 max-h-40 overflow-y-auto">
                     {searchResults.map((product) => (
                       <div key={product.id} className="flex items-center space-x-3 border border-gray-200 rounded-md p-2 hover:bg-gray-50">
                         <img src={product.imageUrl} alt={product.name} className="h-10 w-10 object-cover rounded-md" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
-                          <p className="text-sm text-gray-500 truncate">${(product.price / 100).toFixed(2)}</p>
+                          <p className="text-sm text-gray-500 truncate">{settings.currencySymbol || '$'}{(product.price / 100).toFixed(2)}</p>
                         </div>
                         <Button
                           type="button" 
@@ -147,7 +147,7 @@ export const ProductsCard: React.FC = () => {
                           className="flex-shrink-0"
                         >
                           <Plus className="h-4 w-4 mr-1" />
-                          הוסף
+                          Add
                         </Button>
                       </div>
                     ))}
@@ -158,14 +158,14 @@ export const ProductsCard: React.FC = () => {
               {/* Selected Products */}
               <div className="space-y-4">
                 {settings.recommendedProducts.length === 0 ? (
-                  <p className="text-sm text-gray-500 italic">לא נבחרו מוצרים. חפש והוסף מוצרים למעלה.</p>
+                  <p className="text-sm text-gray-500 italic">No products selected. Search and add products above.</p>
                 ) : (
                   settings.recommendedProducts.map((product) => (
                     <div key={product.id} className="relative flex items-center space-x-3 border border-gray-200 rounded-md p-3 hover:bg-gray-50">
                       <img src={product.imageUrl} alt={product.name} className="h-16 w-16 object-cover rounded-md" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
-                        <p className="text-sm text-gray-500 truncate">${(product.price / 100).toFixed(2)}</p>
+                        <p className="text-sm text-gray-500 truncate">{settings.currencySymbol || '$'}{(product.price / 100).toFixed(2)}</p>
                       </div>
                       <Button
                         type="button"
@@ -189,7 +189,7 @@ export const ProductsCard: React.FC = () => {
                 className="mt-4 flex items-center text-sm text-primary-600 hover:text-primary-500 p-0"
               >
                 <Plus className="h-4 w-4 mr-1" />
-                הוסף עוד מוצרים
+                Add More Products
               </Button>
             </AccordionContent>
           </AccordionItem>

@@ -10,6 +10,8 @@ const defaultSettings: ShippingBarSettings = {
   instanceId: '',
   enabled: false,
   threshold: 5000, // $50.00 in cents
+  currencySymbol: '$',
+  currencyCode: 'USD',
   productSuggestionMethod: 'manual',
   barStyle: 'simple',
   colors: {
@@ -22,6 +24,10 @@ const defaultSettings: ShippingBarSettings = {
   },
   border: {
     color: '#E5E7EB',
+    thickness: 1
+  },
+  progressBarBorder: {
+    color: '#0070F3',
     thickness: 1
   },
   text: {

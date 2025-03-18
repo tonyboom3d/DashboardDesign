@@ -11,6 +11,8 @@ import {
   AlignRight,
   List,
   Palette,
+  ArrowLeftRight,
+  Languages,
 } from 'lucide-react';
 import { useSettings } from '@/hooks/use-settings';
 import { cn } from '@/lib/utils';
@@ -24,6 +26,7 @@ import {
 export const CustomizationCard: React.FC = () => {
   const { state, updateSettings } = useSettings();
   const settings = state.settings || {};
+  // Set default colors if not available
   const backgroundColor = settings.colors?.backgroundColor || '#FFFFFF';
 
   // For color pickers
@@ -44,6 +47,16 @@ export const CustomizationCard: React.FC = () => {
     updateSettings({
       border: {
         ...settings.border,
+        [field]: field === 'thickness' ? Number(value) : value
+      }
+    });
+  };
+  
+  // Helper to update progress bar border
+  const updateProgressBarBorder = (field: keyof typeof settings.progressBarBorder, value: any) => {
+    updateSettings({
+      progressBarBorder: {
+        ...settings.progressBarBorder,
         [field]: field === 'thickness' ? Number(value) : value
       }
     });
@@ -136,7 +149,7 @@ export const CustomizationCard: React.FC = () => {
                         className="h-full rounded-full" 
                         style={{ 
                           width: '60%',
-                          background: 'linear-gradient(to right, #3384FF, #10B981)'
+                          background: `linear-gradient(to right, ${settings.colors?.bar || '#3384FF'}, ${settings.colors?.gradientEnd || '#10B981'})`
                         }}
                       ></div>
                     </div>
@@ -161,14 +174,14 @@ export const CustomizationCard: React.FC = () => {
                           type="color" 
                           id="backgroundColor" 
                           value={settings.colors?.backgroundColor || '#FFFFFF'}
-                          onChange={(e) => updateColor('background', e.target.value)}
+                          onChange={(e) => updateColor('backgroundColor', e.target.value)}
                           className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer"
                         />
                       </div>
                       <Input 
                         type="text" 
-                        value={settings.colors?.background || '#FFFFFF'}
-                        onChange={(e) => updateColor('background', e.target.value)}
+                        value={settings.colors?.backgroundColor || '#FFFFFF'}
+                        onChange={(e) => updateColor('backgroundColor', e.target.value)}
                         className="block w-full py-1.5 px-3 text-sm"
                         placeholder="#FFFFFF"
                       />
@@ -181,10 +194,10 @@ export const CustomizationCard: React.FC = () => {
                           type="button"
                           className={cn(
                             "w-6 h-6 rounded-md border",
-                            settings.colors?.background === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                            settings.colors?.backgroundColor === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
                           )}
                           style={{ backgroundColor: color }}
-                          onClick={() => updateColor('background', color)}
+                          onClick={() => updateColor('backgroundColor', color)}
                           title={color}
                         />
                       ))}
@@ -192,7 +205,9 @@ export const CustomizationCard: React.FC = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="barColor" className="block text-sm font-medium text-gray-700 mb-1">Bar Color</Label>
+                    <Label htmlFor="barColor" className="block text-sm font-medium text-gray-700 mb-1">
+                      {settings.barStyle === 'gradient' ? 'Start Color' : 'Bar Color'}
+                    </Label>
                     <div className="flex items-center">
                       <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
                         <Input 
@@ -226,6 +241,45 @@ export const CustomizationCard: React.FC = () => {
                       ))}
                     </div>
                   </div>
+                  
+                  {/* Secondary color (gradient end) - only shown when gradient style is selected */}
+                  {settings.barStyle === 'gradient' && (
+                    <div>
+                      <Label htmlFor="gradientEndColor" className="block text-sm font-medium text-gray-700 mb-1">End Color</Label>
+                      <div className="flex items-center">
+                        <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
+                          <Input 
+                            type="color" 
+                            id="gradientEndColor" 
+                            value={settings.colors?.gradientEnd || '#10B981'}
+                            onChange={(e) => updateColor('gradientEnd', e.target.value)}
+                            className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer" 
+                          />
+                        </div>
+                        <Input 
+                          type="text" 
+                          value={settings.colors?.gradientEnd || '#10B981'}
+                          onChange={(e) => updateColor('gradientEnd', e.target.value)}
+                          className="block w-full py-1.5 px-3 text-sm"
+                        />
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {["#10B981", "#8B5CF6", "#F59E0B", "#EC4899", "#0070F3"].map(color => (
+                          <button
+                            key={color}
+                            type="button"
+                            className={cn(
+                              "w-6 h-6 rounded-md border",
+                              settings.colors?.gradientEnd === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200"
+                            )}
+                            style={{ backgroundColor: color }}
+                            onClick={() => updateColor('gradientEnd', color)}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div>
                     <Label htmlFor="progressBgColor" className="block text-sm font-medium text-gray-700 mb-1">Progress Background</Label>
@@ -360,6 +414,68 @@ export const CustomizationCard: React.FC = () => {
                   </div>
                 </div>
               </div>
+              
+              {/* Progress Bar Border Options */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="progressBarColor" className="block text-sm font-medium text-gray-700 mb-1">Progress Bar Border Color</Label>
+                  <div className="flex items-center">
+                    <div className="h-8 w-8 rounded-md border border-gray-300 overflow-hidden mr-2">
+                      <Input 
+                        type="color" 
+                        id="progressBarColor" 
+                        value={settings.progressBarBorder?.color || '#0070F3'}
+                        onChange={(e) => updateProgressBarBorder('color', e.target.value)}
+                        className="h-10 w-10 transform -translate-y-1 -translate-x-1 cursor-pointer"
+                      />
+                    </div>
+                    <Input 
+                      type="text" 
+                      value={settings.progressBarBorder?.color || '#0070F3'}
+                      onChange={(e) => updateProgressBarBorder('color', e.target.value)}
+                      className="block w-full py-1.5 px-3 text-sm"
+                    />
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {["#0070F3", "#10B981", "#F59E0B", "#EF4444", "transparent"].map(color => (
+                      <button
+                        key={color}
+                        type="button"
+                        className={cn(
+                          "w-6 h-6 rounded-md border",
+                          settings.progressBarBorder?.color === color ? "ring-2 ring-primary-500" : "ring-1 ring-gray-200",
+                          color === "transparent" && "bg-gray-100"
+                        )}
+                        style={{ backgroundColor: color === "transparent" ? "transparent" : color }}
+                        onClick={() => updateProgressBarBorder('color', color)}
+                        title={color}
+                      >
+                        {color === "transparent" && (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <div className="w-5/6 h-0.5 bg-gray-400 rotate-45" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="progressBarThickness" className="block text-sm font-medium text-gray-700 mb-1">Progress Bar Border Thickness</Label>
+                  <div className="flex items-center space-x-4">
+                    <Slider 
+                      id="progressBarThickness"
+                      min={0}
+                      max={5}
+                      step={1}
+                      value={[settings.progressBarBorder?.thickness || 0]}
+                      onValueChange={(value) => updateProgressBarBorder('thickness', value[0])}
+                      className="w-full"
+                    />
+                    <span className="text-sm font-medium text-gray-900 w-8 text-right">{settings.progressBarBorder?.thickness || 0}px</span>
+                  </div>
+                </div>
+              </div>
 
               {/* Text Alignment */}
               <div>
@@ -402,6 +518,40 @@ export const CustomizationCard: React.FC = () => {
                     <AlignRight className="h-4 w-4" />
                   </Button>
                 </div>
+              </div>
+              
+              {/* Text Direction */}
+              <div>
+                <Label htmlFor="textDirection" className="block text-sm font-medium text-gray-700 mb-1">Text Direction</Label>
+                <div className="inline-flex items-center rounded-md shadow-sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={() => setTextDirection('ltr')}
+                    className={cn(
+                      "px-4 py-2 rounded-l-md",
+                      settings.textDirection === 'ltr' && "bg-primary-50 border-primary-500 text-primary-500"
+                    )}
+                  >
+                    <ArrowLeftRight className="h-4 w-4" />
+                    <span className="ml-2">Left-to-Right</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={() => setTextDirection('rtl')}
+                    className={cn(
+                      "px-4 py-2 rounded-r-md",
+                      settings.textDirection === 'rtl' && "bg-primary-50 border-primary-500 text-primary-500"
+                    )}
+                  >
+                    <Languages className="h-4 w-4" />
+                    <span className="ml-2">Right-to-Left</span>
+                  </Button>
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Set Right-to-Left (RTL) for Hebrew, Arabic, or other RTL languages.</p>
               </div>
             </AccordionContent>
           </AccordionItem>
