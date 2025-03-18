@@ -115,14 +115,17 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
   const progressBarElement = (
     <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: colors.progressBg }}>
       <div 
-        className="h-full rounded-full transition-all duration-300"
+        className={cn(
+          "h-full rounded-full transition-all duration-300",
+          barStyle === 'gradient' ? 'bg-gradient-to-r' : ''
+        )}
         style={{ 
           width: `${progressPercentage}%`,
           backgroundColor: barStyle === 'simple' ? colors.bar : 'none',
           backgroundImage: barStyle === 'gradient' 
             ? `linear-gradient(${settings.progressDirection === 'rtl' ? 'to left' : 'to right'}, ${colors.bar}, ${colors.gradientEnd || colors.highlight})` 
             : 'none',
-          border: progressBarBorder.thickness > 0 ? `${progressBarBorder.thickness}px solid ${settings.progressBarBorder.color}` : 'none',
+          border: `${progressBarBorder.thickness}px solid ${progressBarBorder.color}`,
           // For RTL direction, position the progress bar from the right side
           ...(settings.progressDirection === 'rtl' ? { 
             marginLeft: 'auto',
