@@ -67,10 +67,17 @@ export const ProductsCard: React.FC = () => {
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
 
+    console.log('[Products Card] Starting product search with query:', searchTerm); // Added log
     setIsSearching(true);
-    const products = await fetchWixProducts(searchTerm);
-    setSearchResults(products);
-    setIsSearching(false);
+    try {
+      const products = await fetchWixProducts(searchTerm);
+      console.log('[Products Card] Search results:', products); // Added log
+      setSearchResults(products);
+    } catch (error) {
+      console.error('[Products Card] Error searching products:', error); // Added log
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   // Handle add product
