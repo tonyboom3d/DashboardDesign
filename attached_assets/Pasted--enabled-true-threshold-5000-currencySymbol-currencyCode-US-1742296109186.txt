@@ -1,0 +1,77 @@
+{
+    "enabled": true,
+    "threshold": 5000,
+    "currencySymbol": "$",
+    "currencyCode": "USD",
+    "productSuggestionMethod": "manual",
+    "barStyle": "simple",
+    "colors": {
+        "backgroundColor": "#FFFFFF",
+        "bar": "#0070F3",
+        "progressBg": "#E5E7EB",
+        "text": "#111827",
+        "accent": "#10B981",
+        "highlight": "#F59E0B",
+        "gradientEnd": "#10B981"
+    },
+    "border": {
+        "color": "#E5E7EB",
+        "thickness": 1
+    },
+    "progressBarBorder": {
+        "color": "#0070F3",
+        "thickness": 1
+    },
+    "text": {
+        "barText": "Add ${remaining} more to get FREE shipping!",
+        "successText": "Congratulations! You've qualified for FREE shipping!",
+        "buttonText": "Add to Cart",
+        "initialText": "Start shopping to get FREE shipping!",
+        "showInitialText": true
+    },
+    "textAlignment": "left",
+    "textDirection": "ltr",
+    "textPosition": "above",
+    "progressDirection": "ltr",
+    "icon": {
+        "type": "emoji",
+        "selection": "🚚",
+        "position": "before"
+    },
+    "visibility": {
+        "productPage": {
+            "desktop": true,
+            "mobile": true
+        },
+        "cartPage": {
+            "desktop": true,
+            "mobile": true
+        },
+        "miniCart": {
+            "desktop": true,
+            "mobile": true
+        },
+        "header": {
+            "desktop": false,
+            "mobile": false
+        }
+    },
+    "position": "top",
+    "recommendedProducts": [],
+    "analytics": {
+        "viewCount": 0,
+        "conversionRate": "0%",
+        "aov": "$0.00"
+    },
+    "createdAt": "2025-03-18T11:01:54.928Z",
+    "updatedAt": "2025-03-18T11:01:54.928Z",
+    "instanceId": "b12bfa15-eed5-4bc1-a70e-ce6d3ab17f9c",
+    "accessToken": null,
+    "refreshToken": null,
+    "id": 1,
+    "auth": {
+        "instanceId": "b12bfa15-eed5-4bc1-a70e-ce6d3ab17f9c",
+        "accessToken": null,
+        "refreshToken": null
+    }
+}
