@@ -156,6 +156,56 @@ export async function queryWixDataByInstanceId(
           }
         }
       })
+
+
+/**
+ * Query products from Wix Stores using the REST API
+ */
+export async function queryWixProducts(
+  credentials: WixAuthCredentials,
+  options: {
+    limit?: number;
+    offset?: number;
+    filter?: string;
+    sort?: string;
+  } = {}
+): Promise<any> {
+  if (!credentials.accessToken) {
+    throw new Error('No access token available');
+  }
+
+  try {
+    const response = await fetch('https://www.wixapis.com/stores-reader/v1/products/query', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${credentials.accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: {
+          paging: {
+            limit: Math.min(options.limit || 100, 100),
+            offset: options.offset || 0
+          },
+          filter: options.filter,
+          sort: options.sort
+        },
+        includeVariants: true
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Wix API returned error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.products;
+  } catch (error) {
+    console.error('Error fetching products from Wix API:', error);
+    throw error;
+  }
+}
+
     });
 
     if (!response.ok) {

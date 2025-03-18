@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Search, Plus, X } from 'lucide-react';
 import { useSettings } from '@/hooks/use-settings';
 import { useToast } from '@/hooks/use-toast';
-import { fetchProducts } from '@/api/products';
 import type { Product } from '@/types/settings';
 import { 
   Accordion,
@@ -20,56 +19,72 @@ export const ProductsCard: React.FC = () => {
   const { state, addProduct, removeProduct, updateSettings } = useSettings();
   const { settings } = state;
   const { toast } = useToast();
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  
+
   // Handle product suggestion method change
   const handleSuggestionMethodChange = (value: string) => {
     updateSettings({ 
       productSuggestionMethod: value as 'manual' | 'automatic' | 'bestselling' | 'related' 
     });
   };
-  
+
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
-  
+
+  const fetchWixProducts = async (searchQuery: string = "") => {
+    try {
+      const params = new URLSearchParams({
+        instanceId: settings.instanceId,
+        limit: "100",
+        filter: searchQuery
+      });
+
+      const response = await fetch(`/api/wix-products?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch products');
+
+      const data = await response.json();
+      return data.products.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        price: product.priceData?.price || 0,
+        discountedPrice: product.priceData?.discountedPrice,
+        imageUrl: product.media?.mainMedia?.image?.url || 
+                 'https://via.placeholder.com/100',
+        inStock: product.stock?.inStock || false
+      }));
+    } catch (error) {
+      console.error('Error fetching Wix products:', error);
+      return [];
+    }
+  };
+
   // Handle search button click
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
-    
+
     setIsSearching(true);
-    
-    try {
-      const products = await fetchProducts(searchTerm);
-      setSearchResults(products);
-    } catch (error) {
-      console.error('Failed to search products:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to search products. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSearching(false);
-    }
+    const products = await fetchWixProducts(searchTerm);
+    setSearchResults(products);
+    setIsSearching(false);
   };
-  
+
   // Handle add product
   const handleAddProduct = (product: Product) => {
     addProduct(product);
     setSearchResults([]);
     setSearchTerm('');
   };
-  
+
   // Handle remove product
   const handleRemoveProduct = (productId: string) => {
     removeProduct(productId);
   };
-  
+
   return (
     <Card>
       <CardContent className="p-6">
@@ -83,10 +98,10 @@ export const ProductsCard: React.FC = () => {
                 </div>
               </div>
             </AccordionTrigger>
-            
+
             <AccordionContent className="pt-2 pb-4 space-y-4">
               <p className="text-sm text-gray-500 mb-4">Choose products to offer your customers when they're close to the free shipping threshold.</p>
-              
+
               <div>
                 <Label htmlFor="productSuggestion" className="block font-medium text-gray-700 mb-1">Product Selection Method</Label>
                 <Select 
@@ -104,7 +119,7 @@ export const ProductsCard: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="mb-4">
                 <div className="flex items-center">
                   <Input 
@@ -126,7 +141,7 @@ export const ProductsCard: React.FC = () => {
                   </Button>
                 </div>
               </div>
-              
+
               {/* Search Results */}
               {searchResults.length > 0 && (
                 <div className="mb-4 border border-gray-200 rounded-md p-3">
@@ -137,7 +152,10 @@ export const ProductsCard: React.FC = () => {
                         <img src={product.imageUrl} alt={product.name} className="h-10 w-10 object-cover rounded-md" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
-                          <p className="text-sm text-gray-500 truncate">{settings.currencySymbol || '$'}{(product.price / 100).toFixed(2)}</p>
+                          <p className="text-sm text-gray-500 truncate">
+                            {settings.currencySymbol || '$'}{(product.price / 100).toFixed(2)}
+                            {product.discountedPrice && ` (${settings.currencySymbol || '$'}{(product.discountedPrice / 100).toFixed(2)})`}
+                          </p>
                         </div>
                         <Button
                           type="button" 
@@ -154,7 +172,7 @@ export const ProductsCard: React.FC = () => {
                   </div>
                 </div>
               )}
-              
+
               {/* Selected Products */}
               <div className="space-y-4">
                 {settings.recommendedProducts.length === 0 ? (
@@ -180,7 +198,7 @@ export const ProductsCard: React.FC = () => {
                   ))
                 )}
               </div>
-              
+
               <Button
                 type="button" 
                 variant="link"

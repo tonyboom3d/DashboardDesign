@@ -78,6 +78,46 @@ function getInstanceId(req: Request): string | undefined {
   return undefined;
 }
 
+
+  // Query Wix store products
+  app.get("/api/wix-products", async (req: Request, res: Response) => {
+    try {
+      const { filter, sort, limit, offset } = req.query;
+      const instanceId = req.query.instanceId as string;
+      
+      if (!instanceId) {
+        return res.status(400).json({ message: "Instance ID is required" });
+      }
+
+      // Get settings to access tokens
+      const settings = await storage.getSettingsByInstanceId(instanceId);
+      
+      if (!settings?.accessToken) {
+        return res.status(401).json({ message: "No access token available" });
+      }
+
+      const credentials: WixAuthCredentials = {
+        instanceId,
+        accessToken: settings.accessToken,
+        refreshToken: settings.refreshToken
+      };
+
+      const products = await queryWixProducts(credentials, {
+        limit: Number(limit) || 100,
+        offset: Number(offset) || 0,
+        filter: filter as string,
+        sort: sort as string
+      });
+
+      return res.json({ products });
+    } catch (error) {
+      console.error("Error fetching Wix products:", error);
+      return res.status(500).json({ message: "Failed to fetch products" });
+    }
+  });
+
+
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Enable CORS for Wix domains
   app.use((req, res, next) => {
