@@ -62,12 +62,18 @@ export async function fetchWixProducts(instanceId: string, limit: string = "50",
     };
 
   try {
+    if (!settings?.accessToken) {
+      console.error('[Wix Products API Client] No access token available');
+      throw new Error('Authorization required: Please connect your Wix store first');
+    }
+
     console.log('[Wix Products API Client] Making request to:', url);
     console.log('[Wix Products API Client] Request details:', {
       instanceId,
       limit,
       filter,
       hasAccessToken: !!settings?.accessToken,
+      accessTokenPrefix: settings?.accessToken ? settings.accessToken.substring(0, 10) + '...' : null,
       requestBody: JSON.stringify(requestBody, null, 2)
     });
 

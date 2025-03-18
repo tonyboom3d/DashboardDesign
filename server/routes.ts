@@ -98,12 +98,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const settings = await storage.getSettingsByInstanceId(instanceId);
+      
+      console.log('[Wix Products API] Settings retrieved:', {
+        hasSettings: !!settings,
+        hasAccessToken: !!settings?.accessToken,
+        instanceId
+      });
+
       if (!settings?.accessToken) {
-        return res.status(401).json({ message: "No access token available" });
+        return res.status(401).json({ 
+          message: "No access token available",
+          details: "Please authorize the app in Wix dashboard first"
+        });
       }
 
       const accessToken = settings.accessToken;
       const refreshToken = settings.refreshToken;
+
+      console.log('[Wix Products API] Using tokens:', {
+        hasAccessToken: !!accessToken,
+        accessTokenPrefix: accessToken ? accessToken.substring(0, 10) + '...' : null,
+        hasRefreshToken: !!refreshToken
+      });
 
       const credentials: WixAuthCredentials = {
         instanceId,
