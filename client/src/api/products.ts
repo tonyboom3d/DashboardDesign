@@ -57,13 +57,16 @@ export async function fetchWixProducts(instanceId: string, limit: string = "100"
     });
 
     const requestBody = {
+      dataCollectionId: "Stores/Products",
       query: {
         paging: {
           limit: Math.min(Number(limit), 100),
           offset: 0
         },
-        filter: filter ? String(filter) : undefined,
-      }
+        filter: filter ? JSON.parse(filter) : undefined
+      },
+      returnTotalCount: false,
+      consistentRead: false
     };
 
     console.log('[Wix Products API Client] Request body:', JSON.stringify(requestBody, null, 2));
@@ -96,7 +99,12 @@ export async function fetchWixProducts(instanceId: string, limit: string = "100"
       products: data.items
     });
 
-    return data.items; // Assuming 'items' contains the product array in Wix response
+    return data.dataItems.map((item: any) => ({
+      id: item.data._id,
+      name: item.data.name,
+      price: item.data.price,
+      imageUrl: item.data.mainMedia
+    }));
   } catch (error) {
     console.error('[Wix Products API] Request failed:', {
       error: error instanceof Error ? error.message : 'Unknown error',

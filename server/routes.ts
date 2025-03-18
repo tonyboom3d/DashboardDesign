@@ -128,13 +128,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         console.log('[Wix Products API] Request body:', JSON.stringify(requestBody, null, 2));
         
-        const products = await fetch('https://www.wixapis.com/stores/v3/products/query', {
+        const products = await fetch('https://www.wixapis.com/wix-data/v2/items/query', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify({
+            dataCollectionId: "Stores/Products",
+            query: {
+              paging: {
+                limit: Math.min(Number(limit), 100),
+                offset: Number(offset)
+              },
+              filter: filter ? JSON.parse(filter) : undefined,
+              sort: sort ? JSON.parse(sort) : undefined
+            },
+            returnTotalCount: false,
+            consistentRead: false
+          })
         });
 
         console.log('[Wix Products API] Response status:', products.status);
@@ -149,11 +161,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('[Wix Products API] Successfully fetched products:', { count: data.products?.length });
         
         return res.json({ 
-          products: data.products.map((p: any) => ({
-            id: p.id,
-            name: p.name,
-            price: p.price * 100, // Convert to cents for consistency
-            imageUrl: p.media?.mainMedia?.image?.url || 'https://via.placeholder.com/100'
+          products: data.dataItems.map((item: any) => ({
+            id: item.data._id,
+            name: item.data.name,
+            price: item.data.price * 100, // Convert to cents for consistency
+            imageUrl: item.data.mainMedia || 'https://via.placeholder.com/100'
           }))
         });
       } catch (error) {
