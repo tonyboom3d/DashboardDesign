@@ -1,0 +1,167 @@
+{
+  "dataItems": [
+    {
+      "id": "4003c6df-0465-6dd7-a5e7-86e16284cbf8",
+      "dataCollectionId": "Stores/Products",
+      "data": {
+        "seoData": null,
+        "inStock": true,
+        "weight": 0,
+        "name": "! מנקה המיקרוגל - אל תתעסקו איתה",
+        "sku": "002",
+        "formattedDiscountedPrice": "49.00 ₪",
+        "productOptions": {
+          "צבעים": {
+            "optionType": "color",
+            "name": "צבעים",
+            "choices": [
+              {
+                "inStock": true,
+                "visible": true,
+                "mainMedia": null,
+                "description": "blue",
+                "mediaItems": [],
+                "value": "rgb(0, 0, 255)"
+              },
+              {
+                "inStock": true,
+                "visible": true,
+                "mainMedia": null,
+                "description": "green",
+                "mediaItems": [],
+                "value": "rgb(0, 128, 0)"
+              },
+              {
+                "inStock": true,
+                "visible": true,
+                "mainMedia": null,
+                "description": "Yellow",
+                "mediaItems": [],
+                "value": "rgb(255, 255, 0)"
+              },
+              {
+                "inStock": true,
+                "visible": true,
+                "mainMedia": null,
+                "description": "Purple",
+                "mediaItems": [],
+                "value": "rgb(128, 0, 128)"
+              }
+            ]
+          }
+        },
+        "mainMedia": "wix:image://v1/6b73e9_4f9082ec82b14308a767a17a6f354319~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+        "description": "<div dir=\"rtl\"><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><div><p><strong>✔️משלוח חינם כלול בהזמנה </strong></p><p>✔️<strong>100% אחריות משלוח</strong></p><p><strong>✔️קניה מאובטחת</strong></p><p><strong>✔️מוצר איכותי</strong></p></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>",
+        "_id": "4003c6df-0465-6dd7-a5e7-86e16284cbf8",
+        "discountedPrice": 49,
+        "formattedPrice": "79.00 ₪",
+        "price": 79,
+        "quantityInStock": null,
+        "collections": null,
+        "inventoryItem": "bffc3920-fb9a-9228-5a18-791e9d7b3407",
+        "_updatedDate": {
+          "$date": "2025-03-03T20:20:13.786Z"
+        },
+        "formattedPricePerUnit": null,
+        "slug": "מנקה-המיקרוגל-אל-תתעסקו-איתה",
+        "productType": "physical",
+        "brand": null,
+        "ribbons": [],
+        "pricePerUnitData": null,
+        "mediaItems": [
+          {
+            "description": "",
+            "id": "6b73e9_4f9082ec82b14308a767a17a6f354319~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_4f9082ec82b14308a767a17a6f354319~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_4f9082ec82b14308a767a17a6f354319~mv2.jpg",
+            "type": "Image"
+          },
+          {
+            "description": "",
+            "id": "6b73e9_a8ecca0991fd43389b898688c323e532~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_a8ecca0991fd43389b898688c323e532~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_a8ecca0991fd43389b898688c323e532~mv2.jpg",
+            "type": "Image"
+          },
+          {
+            "description": "",
+            "id": "6b73e9_fcdce5b92417404b9a46cc13137bcbb3~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_fcdce5b92417404b9a46cc13137bcbb3~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_fcdce5b92417404b9a46cc13137bcbb3~mv2.jpg",
+            "type": "Image"
+          },
+          {
+            "description": "",
+            "id": "6b73e9_8a767d14ca3640ebbe061361c3aebfd1~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_8a767d14ca3640ebbe061361c3aebfd1~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_8a767d14ca3640ebbe061361c3aebfd1~mv2.jpg",
+            "type": "Image"
+          },
+          {
+            "description": "",
+            "id": "6b73e9_71bfe07a8cdb4b46bab2bf83b4d17441~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_71bfe07a8cdb4b46bab2bf83b4d17441~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_71bfe07a8cdb4b46bab2bf83b4d17441~mv2.jpg",
+            "type": "Image"
+          },
+          {
+            "description": "",
+            "id": "6b73e9_5cb2bf2a3a0f49fca4fe719837c3677f~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_5cb2bf2a3a0f49fca4fe719837c3677f~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_5cb2bf2a3a0f49fca4fe719837c3677f~mv2.jpg",
+            "type": "Image"
+          },
+          {
+            "description": "",
+            "id": "6b73e9_f957d0cff8774a13b76dd97543222ac5~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_f957d0cff8774a13b76dd97543222ac5~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_f957d0cff8774a13b76dd97543222ac5~mv2.jpg",
+            "type": "Image"
+          },
+          {
+            "description": "",
+            "id": "6b73e9_ff642227ce4b4cceb82cc9d608b1ac29~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_ff642227ce4b4cceb82cc9d608b1ac29~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_ff642227ce4b4cceb82cc9d608b1ac29~mv2.jpg",
+            "type": "Image"
+          },
+          {
+            "description": "",
+            "id": "6b73e9_5bfb01d5cfd6450a868176c8d34a90cf~mv2.jpg",
+            "link": null,
+            "src": "wix:image://v1/6b73e9_5bfb01d5cfd6450a868176c8d34a90cf~mv2.jpg/file.jpg#originWidth=500&originHeight=500",
+            "title": "6b73e9_5bfb01d5cfd6450a868176c8d34a90cf~mv2.jpg",
+            "type": "Image"
+          }
+        ],
+        "trackInventory": false,
+        "customTextFields": [],
+        "pricePerUnit": null,
+        "ribbon": "",
+        "currency": "ILS",
+        "productPageUrl": "/product-page/מנקה-המיקרוגל-אל-תתעסקו-איתה",
+        "numericId": "1499181163315000",
+        "manageVariants": false,
+        "discount": {
+          "type": "AMOUNT",
+          "value": 30
+        },
+        "additionalInfoSections": [
+          {
+            "title": "תיאור מוצר",
+            "description": "<div dir=\"rtl\">רובנו ממש לא אוהבים לנקות את חלל המיקרוגל שלנו. זה לא נוח ולא קל. אבל כולנו שוכחים מדי פעם לכסות את האוכל בזמן החימום, דבר היוצר לכלוך ובלאגן.&nbsp;</div>\n\n<div dir=\"rtl\">&nbsp;</div>\n\n<div dir=\"rtl\">הגיע זמנו של המיקרוגל לעבור ניקוי יסודי? לא תאמינו כמה זה פשוט: בפעולה אחת תקבלו מיקרוגל מבריק ונוצץ.&nbsp;</div>\n\n<div dir=\"rtl\">&nbsp;</div>\n\n<div dir=\"rtl\">אך מנקים מיקרוגל באופן פשוט קל ומהיר, אך עושים זאת נכון ?&nbsp;</div>\n\n<div dir=\"rtl\">ה &nbsp; Angry Mama| &nbsp;\"אמא רגזנית\" שלתוכה שופכים מעט חומץ ובשאר ממלאים &nbsp;במים פושרים. מכניסים את המיקרוגל לעבודת לחימום של 7 דקות. קיטור של \"עצבים\" | אדים ישתחררו ממוחה של ה Angry Mama .</div>\n"
+          }
+        ],
+        "createdDate": {
+          "$date": "2017-07-04T15:12:43.315Z"
+        }
+      }
+    },
