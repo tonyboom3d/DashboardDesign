@@ -112,21 +112,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       try {
-        const products = await fetch('https://www.wixapis.com/stores/v1/products/query', {
+        const products = await fetch('https://www.wixapis.com/stores/v3/products/query', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            query: {
-              paging: {
-                limit: Math.min(Number(limit), 100),
-                offset: Number(offset)
-              },
-              filter: filter ? String(filter) : undefined,
-              sort: sort ? String(sort) : undefined
-            }
+            includeVariants: true,
+            includeHiddenProducts: true,
+            paging: {
+              limit: Math.min(Number(limit), 100),
+              offset: Number(offset)
+            },
+            filter: filter ? String(filter) : undefined,
+            sort: sort ? String(sort) : undefined
           })
         });
 
