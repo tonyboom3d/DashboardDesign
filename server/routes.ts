@@ -347,7 +347,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`[Wix API] Fetching settings for instance: ${instanceId}`);
 
-      // Get token from request if available
+      // Get tokens from request
       const authHeader = req.headers.authorization;
       let accessToken = null;
       let refreshToken = null;
@@ -365,6 +365,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get settings from storage
       let settings = await storage.getSettingsByInstanceId(instanceId);
+
+      // Store tokens if they were provided in the request
+      if (accessToken || refreshToken) {
+        const tokenUpdate = {
+          instanceId,
+          ...(accessToken && { accessToken }),
+          ...(refreshToken && { refreshToken })
+        };
+        settings = await storage.updateSettings(tokenUpdate);
+        console.log('[Wix API] Updated settings with tokens');
+      }
 
       // If settings don't exist, create default settings
       if (!settings) {
