@@ -55,6 +55,8 @@ export class MemStorage implements IStorage {
     const settings: ShippingBarSettings = {
       ...insertSettings,
       id,
+      accessToken: insertSettings.accessToken ?? null,
+      refreshToken: insertSettings.refreshToken ?? null,
       createdAt: now,
       updatedAt: now,
     };
