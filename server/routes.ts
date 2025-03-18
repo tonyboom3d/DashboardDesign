@@ -400,6 +400,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
       version: "1.0.0"
     });
   });
+  
+  // Debug route to verify what changes we've made
+  app.get("/debug-ui-changes", (req: Request, res: Response) => {
+    res.send(`
+      <html>
+        <head>
+          <title>Debug UI Changes</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+            .container { max-width: 800px; margin: 0 auto; }
+            h1 { color: #333; }
+            .feature { background: #f5f5f5; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+            .code { background: #eee; padding: 10px; font-family: monospace; overflow-x: auto; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1>UI Changes Debug Page</h1>
+            
+            <div class="feature">
+              <h2>1. Sticky Live Preview</h2>
+              <p>The Live Preview card has been made sticky with the following class:</p>
+              <div class="code">className="sticky top-4"</div>
+              <p>This keeps the preview visible as you scroll through the customization options.</p>
+            </div>
+            
+            <div class="feature">
+              <h2>2. Text Position Controls</h2>
+              <p>Added controls to position text either above or below the progress bar:</p>
+              <div class="code">
+              settings.textPosition === 'above' && "mb-2"<br>
+              settings.textPosition === 'below' && "mt-2"
+              </div>
+            </div>
+            
+            <div class="feature">
+              <h2>3. Progress Direction Controls</h2>
+              <p>Added controls for progress bar direction (LTR/RTL):</p>
+              <div class="code">
+              settings.progressDirection === 'rtl' ? { <br>
+                marginLeft: 'auto',<br>
+                marginRight: '0'<br>
+              } : {}
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `);
+  });
 
   const httpServer = createServer(app);
 

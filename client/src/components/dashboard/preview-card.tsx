@@ -33,7 +33,7 @@ export const PreviewCard: React.FC = () => {
   
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="sticky top-4">
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">Live Preview</h2>
         </div>
@@ -131,61 +131,7 @@ export const PreviewCard: React.FC = () => {
         </div>
       </Card>
       
-      <Card>
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Getting Started</h2>
-        </div>
-        
-        <div className="p-4">
-          <div className="space-y-4">
-            <div className="flex items-start">
-              <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-primary-100 text-primary-600">
-                <span className="text-xs font-medium">1</span>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-gray-900">Enable the Free Shipping Bar</h3>
-                <p className="mt-1 text-sm text-gray-500">Toggle the switch in General Settings to activate.</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start">
-              <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-primary-100 text-primary-600">
-                <span className="text-xs font-medium">2</span>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-gray-900">Set Your Free Shipping Threshold</h3>
-                <p className="mt-1 text-sm text-gray-500">Enter the minimum order value for free shipping.</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start">
-              <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-primary-100 text-primary-600">
-                <span className="text-xs font-medium">3</span>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-gray-900">Select Products to Recommend</h3>
-                <p className="mt-1 text-sm text-gray-500">Choose items that can help customers reach the free shipping threshold.</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start">
-              <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-primary-100 text-primary-600">
-                <span className="text-xs font-medium">4</span>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-gray-900">Customize the Appearance</h3>
-                <p className="mt-1 text-sm text-gray-500">Personalize colors, text, and placement to match your brand.</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-6">
-            <Button variant="link" className="text-sm font-medium text-primary-600 hover:text-primary-500 p-0">
-              View full documentation →
-            </Button>
-          </div>
-        </div>
-      </Card>
+
     </div>
   );
 };
