@@ -1,0 +1,60 @@
+Wix Stores API: Query Products
+The queryProducts method retrieves a list of up to 100 products based on specified filtering, sorting, and pagination options.
+Endpoint
+URL: https://www.wixapis.com/stores-reader/v1/products/query
+Method: POST
+Parameters
+query: Contains options for filtering, sorting, and pagination.
+paging: Controls the number of items returned and the offset.
+limit: Number of items to load per page (max 100).
+offset: Number of items to skip.
+filter: A string to filter products (e.g., by category, price, etc.).
+sort: A string to sort products (e.g., by name, price, etc.).
+includeVariants: (boolean) Whether to include product variants in the response.
+includeHiddenProducts: (boolean) Whether to include hidden products (requires permissions).
+includeMerchantSpecificData: (boolean) Whether to include merchant-specific data (requires permissions).
+Response
+The response includes:
+products: An array of product objects with details like id, name, priceData, stock, media, etc.
+metadata: Pagination metadata.
+totalResults: Total number of products matching the query.
+Example Requests
+Basic Query with Pagination
+bash
+
+curl -X POST \
+'https://www.wixapis.com/stores-reader/v1/products/query' \
+-H 'Content-Type: application/json' \
+-H 'Authorization: <AUTH>' \
+--data-binary '{
+    "query": {
+        "paging": {
+            "limit": 10,
+            "offset": 0
+        }
+    }
+}'
+Query with Filtering and Sorting
+bash
+
+curl -X POST \
+'https://www.wixapis.com/stores-reader/v1/products/query' \
+-H 'Content-Type: application/json' \
+-H 'Authorization: <AUTH>' \
+--data-binary '{
+    "query": {
+        "filter": "electronics",
+        "sort": "price"
+    }
+}'
+Include Variants and Hidden Products
+bash
+
+curl -X POST \
+'https://www.wixapis.com/stores-reader/v1/products/query' \
+-H 'Content-Type: application/json' \
+-H 'Authorization: <AUTH>' \
+--data-binary '{
+    "includeVariants": true,
+    "includeHiddenProducts": true
+}'
