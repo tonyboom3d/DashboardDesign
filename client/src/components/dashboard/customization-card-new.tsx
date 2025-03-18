@@ -13,6 +13,7 @@ import {
   Palette,
   ArrowLeftRight,
   Languages,
+  Smile,
 } from 'lucide-react';
 import { useSettings } from '@/hooks/use-settings';
 import { cn } from '@/lib/utils';
@@ -22,6 +23,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 export const CustomizationCard: React.FC = () => {
   const { state, updateSettings } = useSettings();
@@ -698,6 +706,64 @@ export const CustomizationCard: React.FC = () => {
                   onChange={(e) => updateText('buttonText', e.target.value)}
                   className="block w-full"
                 />
+              </div>
+
+              {/* Emoji Icon Section */}
+              <div className="space-y-2">
+                <Label className="block text-sm font-medium text-gray-700">Icon</Label>
+                <div className="flex items-center gap-4">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="flex items-center gap-2">
+                        <span className="text-lg">{settings.icon?.selection || '🚚'}</span>
+                        <span>Select Emoji</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-48 p-2">
+                      <div className="grid grid-cols-5 gap-2">
+                        {['🚚', '📦', '🛒', '🛍️', '🎁', '🚀', '✨', '💰', '💸', '📱', '💻', '👕', '👟', '🧢', '👜'].map((emoji) => (
+                          <DropdownMenuItem 
+                            key={emoji}
+                            className="flex h-9 w-9 items-center justify-center cursor-pointer text-lg hover:bg-gray-100 rounded"
+                            onClick={() => {
+                              updateIcon('type', 'emoji');
+                              selectIcon(emoji);
+                            }}
+                          >
+                            {emoji}
+                          </DropdownMenuItem>
+                        ))}
+                      </div>
+                      <DropdownMenuSeparator className="my-2" />
+                      <DropdownMenuItem
+                        className="cursor-pointer justify-center text-sm text-red-500 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => {
+                          updateIcon('type', 'none');
+                          selectIcon('');
+                        }}
+                      >
+                        Remove Icon
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {settings.icon?.type === 'emoji' && settings.icon?.selection && (
+                    <div className="flex gap-3">
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm font-medium text-gray-700">Position:</Label>
+                        <select
+                          value={settings.icon?.position || 'before'}
+                          onChange={(e) => updateIcon('position', e.target.value)}
+                          className="border border-gray-300 rounded-md p-1 text-sm"
+                        >
+                          <option value="before">Before Text</option>
+                          <option value="after">After Text</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Select an emoji to display in your shipping bar, or remove it entirely.</p>
               </div>
             </AccordionContent>
           </AccordionItem>
