@@ -1,0 +1,62 @@
+2025-03-18 14:01:35.31
+host: 'freeshipping-bar.replit.app',
+2025-03-18 14:01:35.31
+'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+2025-03-18 14:01:35.31
+accept: '*/*',
+2025-03-18 14:01:35.31
+'accept-encoding': 'gzip, deflate, br, zstd',
+2025-03-18 14:01:35.31
+'accept-language': 'en-US,en;q=0.9',
+2025-03-18 14:01:35.31
+'content-type': 'application/json',
+2025-03-18 14:01:35.31
+'if-none-match': 'W/"545-v8s0PwBoBcyx/43pa8XsV85AAhA"',
+2025-03-18 14:01:35.31
+priority: 'u=1, i',
+2025-03-18 14:01:35.31
+referer: 'https://freeshipping-bar.replit.app/?location=%5Bobject+Object%5D&displayMode=main&origin=https%3A%2F%2Fmanage.wix.com&inBizMgr=true&instance=L_MVDF6UPWgj3ALuxtDvZodR-kTga1sSk1IMRTGNpX8.eyJpbnN0YW5jZUlkIjoiYjEyYmZhMTUtZWVkNS00YmMxLWE3MGUtY2U2ZDNhYjE3ZjljIiwiYXBwRGVmSWQiOiI4OGNhN2RlOC0xYjRmLTQ0MDctYjE3MS1jYjNmNWI1NzNjOGYiLCJzaWduRGF0ZSI6IjIwMjUtMDMtMThUMTI6MDE6MjQuNDc4WiIsInVpZCI6IjZiNzNlOWU2LTdlNDMtNGNjNC1iY2NkLTZkNTE5NjM2ZmFkYSIsInBlcm1pc3Npb25zIjoiT1dORVIiLCJkZW1vTW9kZSI6ZmFsc2UsInNpdGVPd25lcklkIjoiNmI3M2U5ZTYtN2U0My00Y2M0LWJjY2QtNmQ1MTk2MzZmYWRhIiwic2l0ZU1lbWJlcklkIjoiNmI3M2U5ZTYtN2U0My00Y2M0LWJjY2QtNmQ1MTk2MzZmYWRhIiwiZXhwaXJhdGlvbkRhdGUiOiIyMDI1LTAzLTE4VDE2OjAxOjI0LjQ3OFoiLCJsb2dpbkFjY291bnRJZCI6IjZiNzNlOWU2LTdlNDMtNGNjNC1iY2NkLTZkNTE5NjM2ZmFkYSIsInBhaSI6bnVsbCwibHBhaSI6bnVsbCwiYW9yIjp0cnVlLCJzY2QiOiIyMDE3LTA1LTE4VDIyOjM5OjE4LjU2OVoifQ&locale=en&dashboardSdkAvailable=true&lang=en&essentials=%257B%2522language%2522%253A%2522en%2522%252C%2522locale%2522%253A%2522en%2522%257D&authorizationCode=JWS.eyJraWQiOiJZVjZIa2ZKYyIsImFsZyI6IkhTMjU2In0.eyJkYXRhIjoie1wiZGVjb2RlZFRva2VuXCI6e1widXNlcklkXCI6XCI2YjczZTllNi03ZTQzLTRjYzQtYmNjZC02ZDUxOTYzNmZhZGFcIixcImFjY291bnRJZFwiOlwiNmI3M2U5ZTYtN2U0My00Y2M0LWJjY2QtNmQ1MTk2MzZmYWRhXCIsXCJzaXRlSWRcIjpcImJlNmVmNThkLWUzOWQtNGZkOS05YjJhLTkzNmU5YWMyYzNiM1wiLFwiYXBwSWRcIjpcIjg4Y2E3ZGU4LTFiNGYtNDQwNy1iMTcxLWNiM2Y1YjU3M2M4ZlwiLFwib3JpZ2luRG9tYWluXCI6XCJodHRwczovL2ZyZWVzaGlwcGluZy1iYXIucmVwbGl0LmFwcFwiLFwiaW5zdGFuY2VJZFwiOlwiYjEyYmZhMTUtZWVkNS00YmMxLWE3MGUtY2U2ZDNhYjE3ZjljXCIsXCJzaXRlVmVsb0luc3RhbmNlSWRcIjpcIjA5NGVlMTA2LTJiMjEtNGI5YS05NGZlLTJmMWE2OGZhNWMzOFwiLFwic2l0ZUh0bWxXZWJJbnN0YW5jZUlkXCI6XCI3YTM1ZWFkYS00YzdlLTQ5M2YtYmU3Ni0xOTlkYWFjOTA1MmJcIixcInZlbG9QZXJtaXNzaW9uXCI6XCJPV05FUlwiLFwiYXBwVmVyc2lvblwiOlwibGF0ZXN0XCIsXCJ3aXhDb2RlQWRtaW5cIjp0cnVlLFwiaXNMb2dnZWRJbkFjY291bnRPd25lclwiOnRydWUsXCJob3N0U2l0ZU93bmVyXCI6XCI2YjczZTllNi03ZTQzLTRjYzQtYmNjZC02ZDUxOTYzNmZhZGFcIixcInNpdGVDcmVhdGVkRGF0ZVwiOlwiMjAxNy0wNS0xOFQyMjozOToxOC41NjlaXCIsXCJhY2NvdW50Q3JlYXRlZERhdGVcIjpcIjE5NzAtMDEtMDFUMDA6MDA6MDBaXCJ9LFwidG9rZW5NZXRhZGF0YVwiOntcInNpdGVJZFwiOlwiYmU2ZWY1OGQtZTM5ZC00ZmQ5LTliMmEtOTM2ZTlhYzJjM2IzXCIsXCJhcHBJZFwiOlwiODhjYTdkZTgtMWI0Zi00NDA3LWIxNzEtY2IzZjViNTczYzhmXCIsXCJvcmlnaW5Eb21haW5cIjpcImh0dHBzOi8vZnJlZXNoaXBwaW5nLWJhci5yZXBsaXQuYXBwXCJ9LFwidG9rZW5JZFwiOlwiYmYxMjczYjQtM2FkYy00MDkzLTk1NjYtZDY4OWUyMWJmYWZjXCIsXCJleHBpcmF0aW9uRGF0ZVwiOlwiMjAyNS0wMy0xOFQxMzowMTozM1pcIixcImNyZWF0ZWREYXRlXCI6XCIyMDI1LTAzLTE4VDEyOjAxOjMzWlwifSIsImlhdCI6MTc0MjI5OTI5MywiZXhwIjoxNzQyMzAyODkzfQ.nK0qMCV74MXOac79YNy7QF3fLSwlf0xbQrOQQDsZN_0',
+2025-03-18 14:01:35.31
+'sec-ch-ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
+2025-03-18 14:01:35.31
+'sec-ch-ua-mobile': '?0',
+2025-03-18 14:01:35.31
+'sec-ch-ua-platform': '"Windows"',
+2025-03-18 14:01:35.31
+'sec-fetch-dest': 'empty',
+2025-03-18 14:01:35.31
+'sec-fetch-mode': 'cors',
+2025-03-18 14:01:35.31
+'sec-fetch-site': 'same-origin',
+2025-03-18 14:01:35.31
+'sec-fetch-storage-access': 'active',
+2025-03-18 14:01:35.31
+'server-timing': 'depproxy;dur=1742299295300, pid1req;dur=1742299295317',
+2025-03-18 14:01:35.31
+traceparent: '00-37c35ed938547aa575677ce2d798591d-737e3db21e00a950-00',
+2025-03-18 14:01:35.31
+via: '1.1 google',
+2025-03-18 14:01:35.31
+'x-cloud-trace-context': '37c35ed938547aa575677ce2d798591d/8322156996644088144',
+2025-03-18 14:01:35.31
+'x-forwarded-for': '5.29.19.230, 34.117.33.233, 35.191.8.84,34.55.171.223',
+2025-03-18 14:01:35.31
+'x-forwarded-host': 'freeshipping-bar.replit.app',
+2025-03-18 14:01:35.31
+'x-forwarded-proto': 'https',
+2025-03-18 14:01:35.31
+'x-replit-user-bio': '',
+2025-03-18 14:01:35.31
+'x-replit-user-id': '',
+2025-03-18 14:01:35.31
+'x-replit-user-name': '',
+2025-03-18 14:01:35.31
+'x-replit-user-profile-image': '',
+2025-03-18 14:01:35.31
+'x-replit-user-roles': '',
+2025-03-18 14:01:35.31
+'x-replit-user-teams': '',
+2025-03-18 14:01:35.31
+'x-replit-user-url': ''
+2025-03-18 14:01:35.31
+}
