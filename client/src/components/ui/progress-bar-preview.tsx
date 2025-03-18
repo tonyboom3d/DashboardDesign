@@ -89,7 +89,11 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
     messageContent = (
       <div 
         className={cn(
-          "flex items-center mb-2",
+          "flex items-center",
+          // Only add margin-bottom if text position is above
+          settings.textPosition === 'above' && "mb-2",
+          // Only add margin-top if text position is below
+          settings.textPosition === 'below' && "mt-2",
           textAlignment === 'center' && "justify-center",
           textAlignment === 'right' && "justify-end",
           textDirection === 'rtl' ? 'rtl' : 'ltr'
@@ -107,25 +111,36 @@ export const ProgressBarPreview: React.FC<ProgressBarPreviewProps> = ({
     );
   }
   
+  // Create the progress bar element that can be reordered based on text position
+  const progressBarElement = (
+    <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: colors.progressBg }}>
+      <div 
+        className="h-full rounded-full transition-all duration-300"
+        style={{ 
+          width: `${progressPercentage}%`,
+          backgroundColor: barStyle === 'simple' ? colors.bar : 'none',
+          backgroundImage: barStyle === 'gradient' 
+            ? `linear-gradient(${settings.progressDirection === 'rtl' ? 'to left' : 'to right'}, ${colors.bar}, ${colors.gradientEnd || colors.highlight})` 
+            : 'none',
+          border: progressBarBorder.thickness > 0 ? `${progressBarBorder.thickness}px solid ${progressBarBorder.color}` : 'none',
+          // For RTL direction, position the progress bar from the right side
+          ...(settings.progressDirection === 'rtl' ? { 
+            marginLeft: 'auto',
+            marginRight: '0'
+          } : {})
+        }}
+      />
+    </div>
+  );
+  
   const contentToRender = thresholdReached ? (
     messageContent
   ) : (
     <div className="p-3 text-sm">
-      {messageContent}
-      
-      <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: colors.progressBg }}>
-        <div 
-          className="h-full rounded-full transition-all duration-300"
-          style={{ 
-            width: `${progressPercentage}%`,
-            backgroundColor: barStyle === 'simple' ? colors.bar : 'none',
-            backgroundImage: barStyle === 'gradient' 
-              ? `linear-gradient(to right, ${colors.bar}, ${colors.gradientEnd || colors.highlight})` 
-              : 'none',
-            border: progressBarBorder.thickness > 0 ? `${progressBarBorder.thickness}px solid ${progressBarBorder.color}` : 'none'
-          }}
-        />
-      </div>
+      {/* Conditionally render based on text position */}
+      {settings.textPosition === 'above' && messageContent}
+      {progressBarElement}
+      {settings.textPosition === 'below' && messageContent}
       
       {settings.recommendedProducts.length > 0 && (
         <div className="mt-3 grid grid-cols-2 gap-2">

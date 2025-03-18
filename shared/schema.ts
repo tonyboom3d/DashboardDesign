@@ -30,6 +30,8 @@ export const shippingBarSettings = pgTable("shipping_bar_settings", {
   text: jsonb("text").notNull(),
   textAlignment: text("text_alignment").default("left").notNull(),
   textDirection: text("text_direction").default("ltr").notNull(),
+  textPosition: text("text_position").default("above").notNull(),
+  progressDirection: text("progress_direction").default("ltr").notNull(),
   icon: jsonb("icon").notNull(),
   visibility: jsonb("visibility").notNull(),
   position: text("position").default("top").notNull(),
@@ -76,6 +78,8 @@ export const defaultShippingBarSettings = {
   },
   textAlignment: "left",
   textDirection: "ltr",
+  textPosition: "above",
+  progressDirection: "ltr",
   icon: {
     type: "emoji",
     selection: "🚚",

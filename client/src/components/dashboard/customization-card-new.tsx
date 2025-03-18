@@ -90,6 +90,14 @@ export const CustomizationCard: React.FC = () => {
     updateSettings({ textDirection: direction });
   };
 
+  const setTextPosition = (position: 'above' | 'below') => {
+    updateSettings({ textPosition: position });
+  };
+
+  const setProgressDirection = (direction: 'ltr' | 'rtl') => {
+    updateSettings({ progressDirection: direction });
+  };
+
   const setBarStyle = (style: 'simple' | 'gradient') => {
     updateSettings({ barStyle: style });
   };
@@ -552,6 +560,72 @@ export const CustomizationCard: React.FC = () => {
                   </Button>
                 </div>
                 <p className="mt-1 text-xs text-gray-500">Set Right-to-Left (RTL) for Hebrew, Arabic, or other RTL languages.</p>
+              </div>
+              
+              {/* Text Position */}
+              <div>
+                <Label htmlFor="textPosition" className="block text-sm font-medium text-gray-700 mb-1">Text Position</Label>
+                <div className="inline-flex items-center rounded-md shadow-sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={() => setTextPosition('above')}
+                    className={cn(
+                      "px-4 py-2 rounded-l-md",
+                      settings.textPosition === 'above' && "bg-primary-50 border-primary-500 text-primary-500"
+                    )}
+                  >
+                    <span>Above Bar</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={() => setTextPosition('below')}
+                    className={cn(
+                      "px-4 py-2 rounded-r-md",
+                      settings.textPosition === 'below' && "bg-primary-50 border-primary-500 text-primary-500"
+                    )}
+                  >
+                    <span>Below Bar</span>
+                  </Button>
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Position the message text above or below the progress bar.</p>
+              </div>
+              
+              {/* Progress Bar Direction */}
+              <div>
+                <Label htmlFor="progressDirection" className="block text-sm font-medium text-gray-700 mb-1">Progress Bar Direction</Label>
+                <div className="inline-flex items-center rounded-md shadow-sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={() => setProgressDirection('ltr')}
+                    className={cn(
+                      "px-4 py-2 rounded-l-md",
+                      settings.progressDirection === 'ltr' && "bg-primary-50 border-primary-500 text-primary-500"
+                    )}
+                  >
+                    <ArrowLeftRight className="h-4 w-4" />
+                    <span className="ml-2">Left-to-Right</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={() => setProgressDirection('rtl')}
+                    className={cn(
+                      "px-4 py-2 rounded-r-md",
+                      settings.progressDirection === 'rtl' && "bg-primary-50 border-primary-500 text-primary-500"
+                    )}
+                  >
+                    <ArrowLeftRight className="h-4 w-4 transform rotate-180" />
+                    <span className="ml-2">Right-to-Left</span>
+                  </Button>
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Choose which direction the progress bar fills from.</p>
               </div>
             </AccordionContent>
           </AccordionItem>

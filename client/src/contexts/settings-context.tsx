@@ -40,6 +40,8 @@ const defaultSettings: ShippingBarSettings = {
   },
   textAlignment: 'left',
   textDirection: 'ltr',
+  textPosition: 'above', // Default text position is above the progress bar
+  progressDirection: 'ltr', // Default progress bar direction is left-to-right
   icon: {
     type: 'emoji',
     selection: '🚚',

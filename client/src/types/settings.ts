@@ -71,6 +71,8 @@ export interface ShippingBarSettings {
   text: ShippingBarText;
   textAlignment: 'left' | 'center' | 'right';
   textDirection: 'ltr' | 'rtl';
+  textPosition: 'above' | 'below'; // Added for text position relative to progress bar
+  progressDirection: 'ltr' | 'rtl'; // Added for progress bar direction
   icon: ShippingBarIcon;
   visibility: ShippingBarVisibility;
   position: 'top' | 'bottom';
