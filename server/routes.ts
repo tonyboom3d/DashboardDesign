@@ -87,88 +87,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Query Wix store products
   app.get("/api/wix-products", async (req: Request, res: Response) => {
     try {
-      const { filter, sort, limit, offset } = req.query;
+      const { filter, sort, limit = 100, offset = 0 } = req.query;
       const instanceId = req.query.instanceId as string;
       const authHeader = req.headers.authorization;
-      let accessToken = null;
-      let refreshToken = null;
-
-      console.log('[Wix Products API] Request received:', {
-        instanceId,
-        filter,
-        sort,
-        limit,
-        offset,
-        hasAuthHeader: !!authHeader
-      });
+      
+      console.log('[Wix Products API] Request received with params:', { instanceId, filter, sort, limit, offset });
 
       if (!instanceId) {
-        console.log('[Wix Products API] No instance ID provided');
         return res.status(400).json({ message: "Instance ID is required" });
       }
 
-      let settings = await storage.getSettingsByInstanceId(instanceId);
-      console.log('[Wix Products API] Settings retrieved:', {
-        hasSettings: !!settings,
-        hasAccessToken: !!settings?.accessToken,
-        hasRefreshToken: !!settings?.refreshToken
-      });
-      
+      const settings = await storage.getSettingsByInstanceId(instanceId);
       if (!settings?.accessToken) {
-        console.log('[Wix Products API] No access token in settings');
         return res.status(401).json({ message: "No access token available" });
       }
 
-      // Try to use token from authorization header first
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        accessToken = authHeader.substring(7);
-        console.log('[Wix Products API] Using token from Authorization header');
-      } else {
-        // Fall back to stored token
-        accessToken = settings.accessToken;
-        console.log('[Wix Products API] Using token from stored settings');
-      }
-
-      try {
-        // Try to use existing access token
-        accessToken = settings.accessToken;
-      } catch (error) {
-        // If token is invalid, try to refresh it
-        if (settings.refreshToken) {
-          try {
-            const response = await fetch('https://www.wixapis.com/oauth/access', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                grant_type: 'refresh_token',
-                client_id: process.env.WIX_APP_ID,
-                client_secret: process.env.WIX_APP_SECRET,
-                refresh_token: settings.refreshToken
-              })
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              accessToken = data.access_token;
-              
-              // Update stored access token
-              settings = await storage.updateSettings({
-                instanceId,
-                accessToken: data.access_token
-              });
-            } else {
-              return res.status(401).json({ message: "Failed to refresh access token" });
-            }
-          } catch (refreshError) {
-            console.error('Error refreshing token:', refreshError);
-            return res.status(401).json({ message: "Error refreshing access token" });
-          }
-        } else {
-          return res.status(401).json({ message: "No refresh token available" });
-        }
-      }
+      const accessToken = settings.accessToken;
+      const refreshToken = settings.refreshToken;
 
       const credentials: WixAuthCredentials = {
         instanceId,
@@ -176,17 +111,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
         refreshToken
       };
 
-      // Using mock products due to missing queryWixProducts implementation
-      const sampleProducts = [
-        { id: "1", name: "Leather Wallet", price: 1999, imageUrl: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" },
-        { id: "2", name: "Cotton T-Shirt", price: 1499, imageUrl: "https://images.unsplash.com/photo-1543512214-318c7553f230?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" },
-        { id: "3", name: "Phone Case", price: 1299, imageUrl: "https://images.unsplash.com/photo-1560343090-f0409e92791a?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" },
-        { id: "4", name: "Sunglasses", price: 2499, imageUrl: "https://images.unsplash.com/photo-1565620731358-e8c038abc8d1?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" },
-        { id: "5", name: "Handmade Soap", price: 799, imageUrl: "https://images.unsplash.com/photo-1613333835718-9b8b24e92939?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" },
-      ];
+      try {
+        const products = await fetch('https://www.wixapis.com/stores/v1/products/query', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: {
+              paging: {
+                limit: Math.min(Number(limit), 100),
+                offset: Number(offset)
+              },
+              filter: filter ? String(filter) : undefined,
+              sort: sort ? String(sort) : undefined
+            }
+          })
+        });
 
-      console.log('[Wix Products API] Returning sample products');
-      return res.json({ products: sampleProducts });
+        if (!products.ok) {
+          console.error('[Wix Products API] Error response:', products.status, await products.text());
+          throw new Error(`Failed to fetch products: ${products.statusText}`);
+        }
+
+        const data = await products.json();
+        console.log('[Wix Products API] Successfully fetched products:', { count: data.products?.length });
+        
+        return res.json({ 
+          products: data.products.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            price: p.price * 100, // Convert to cents for consistency
+            imageUrl: p.media?.mainMedia?.image?.url || 'https://via.placeholder.com/100'
+          }))
+        });
+      } catch (error) {
+        console.error('[Wix Products API] Error fetching products:', error);
+        return res.status(500).json({ message: "Failed to fetch products from Wix", error: error.message });
+      }
     } catch (error) {
       console.error("[Wix Products API] Error:", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
