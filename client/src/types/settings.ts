@@ -59,6 +59,8 @@ export interface Product {
 
 export interface ShippingBarSettings {
   instanceId: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   enabled: boolean;
   threshold: number; // in cents
   currencySymbol: string; // Added for currency symbol

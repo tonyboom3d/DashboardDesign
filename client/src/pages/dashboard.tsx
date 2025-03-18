@@ -32,12 +32,14 @@ const Dashboard: React.FC = () => {
     try {
       // Make sure we're passing the necessary parameters expected by the Wix backend
       const { instanceId } = state.settings;
+      const { accessToken, refreshToken } = state.settings;
       if (!instanceId) {
         throw new Error("No instanceId found. Settings cannot be saved without an instanceId.");
       }
       
       // Get current enabled status and other properties
       const { enabled = true } = state.settings;
+    
       
       console.log('About to save settings with instanceId:', instanceId);
       
@@ -46,6 +48,8 @@ const Dashboard: React.FC = () => {
         ...state.settings,
         instanceId,
         enabled,
+        accessToken,
+        refreshToken
       };
       
       // Log the full settings object we're about to save
