@@ -90,7 +90,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { filter, sort, limit = 100, offset = 0 } = req.query;
       const instanceId = req.query.instanceId as string;
       const authHeader = req.headers.authorization;
-      
+
       console.log('[Wix Products API] Request received with params:', { instanceId, filter, sort, limit, offset });
 
       if (!instanceId) {
@@ -111,8 +111,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         refreshToken
       };
 
-      console.log('[Wix Products API] Making request with params:', { limit, offset, filter, sort });
-      console.log('[Wix Products API] Using access token:', accessToken?.substring(0, 10) + '...');
+      console.log('[Wix Products API Server] Making request with params:', { limit, offset, filter, sort });
+      console.log('[Wix Products API Server] Using access token:', accessToken?.substring(0, 10) + '...');
+      console.log('[Wix Products API Server] Full request details:', {
+        url: 'https://www.wixapis.com/wix-data/v2/items/query',
+        instanceId,
+        hasAccessToken: !!accessToken,
+        requestBody: JSON.stringify({
+          dataCollectionId: "Stores/Products",
+          query: {
+            paging: {
+              limit: Math.min(Number(limit), 100),
+              offset: Number(offset)
+            },
+            filter: filter ? JSON.parse(filter) : undefined,
+            sort: sort ? JSON.parse(sort) : undefined
+          }
+        }, null, 2)
+      });
 
       try {
         const requestBody = {
@@ -125,9 +141,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           filter: filter ? String(filter) : undefined,
           sort: sort ? String(sort) : undefined
         };
-        
+
         console.log('[Wix Products API] Request body:', JSON.stringify(requestBody, null, 2));
-        
+
         const products = await fetch('https://www.wixapis.com/wix-data/v2/items/query', {
           method: 'POST',
           headers: {
@@ -159,7 +175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         const data = await products.json();
         console.log('[Wix Products API] Successfully fetched products:', { count: data.products?.length });
-        
+
         return res.json({ 
           products: data.dataItems.map((item: any) => ({
             id: item.data._id,

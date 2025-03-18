@@ -48,12 +48,13 @@ export async function fetchWixProducts(instanceId: string, limit: string = "50",
   console.log('[Wix Products API] Fetching products:', { url, instanceId, limit, filter });
 
   try {
-    console.log('[Wix Products API Client] Making request:', {
-      url,
+    console.log('[Wix Products API Client] Making request to:', url);
+    console.log('[Wix Products API Client] Request details:', {
       instanceId,
       limit,
       filter,
-      hasAccessToken: !!settings?.accessToken
+      hasAccessToken: !!settings?.accessToken,
+      requestBody: JSON.stringify(requestBody, null, 2)
     });
 
     const requestBody = {
