@@ -48,25 +48,37 @@ export async function fetchWixProducts(instanceId: string, limit: string = "100"
   console.log('[Wix Products API] Fetching products:', { url, instanceId, limit, filter });
 
   try {
+    console.log('[Wix Products API Client] Making request:', {
+      url,
+      instanceId,
+      limit,
+      filter,
+      hasAccessToken: !!settings?.accessToken
+    });
+
+    const requestBody = {
+      query: {
+        paging: {
+          limit: Math.min(Number(limit), 100),
+          offset: 0
+        },
+        filter: filter ? String(filter) : undefined,
+      }
+    };
+
+    console.log('[Wix Products API Client] Request body:', JSON.stringify(requestBody, null, 2));
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${settings?.accessToken}`, // Added Authorization header
+        'Authorization': `Bearer ${settings?.accessToken}`,
       },
-      body: JSON.stringify({
-        query: {
-          paging: {
-            limit: Math.min(Number(limit), 100),
-            offset: 0
-          },
-          filter: filter ? String(filter) : undefined,
-        }
-      })
+      body: JSON.stringify(requestBody)
     });
 
-    console.log('[Wix Products API] Response status:', response.status);
-    console.log('[Wix Products API] Response headers:', Object.fromEntries(response.headers.entries()));
+    console.log('[Wix Products API Client] Response status:', response.status);
+    console.log('[Wix Products API Client] Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();

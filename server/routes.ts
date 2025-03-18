@@ -111,24 +111,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         refreshToken
       };
 
+      console.log('[Wix Products API] Making request with params:', { limit, offset, filter, sort });
+      console.log('[Wix Products API] Using access token:', accessToken?.substring(0, 10) + '...');
+
       try {
+        const requestBody = {
+          includeVariants: true,
+          includeHiddenProducts: true,
+          paging: {
+            limit: Math.min(Number(limit), 100),
+            offset: Number(offset)
+          },
+          filter: filter ? String(filter) : undefined,
+          sort: sort ? String(sort) : undefined
+        };
+        
+        console.log('[Wix Products API] Request body:', JSON.stringify(requestBody, null, 2));
+        
         const products = await fetch('https://www.wixapis.com/stores/v3/products/query', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            includeVariants: true,
-            includeHiddenProducts: true,
-            paging: {
-              limit: Math.min(Number(limit), 100),
-              offset: Number(offset)
-            },
-            filter: filter ? String(filter) : undefined,
-            sort: sort ? String(sort) : undefined
-          })
+          body: JSON.stringify(requestBody)
         });
+
+        console.log('[Wix Products API] Response status:', products.status);
+        console.log('[Wix Products API] Response headers:', Object.fromEntries(products.headers.entries()));
 
         if (!products.ok) {
           console.error('[Wix Products API] Error response:', products.status, await products.text());
