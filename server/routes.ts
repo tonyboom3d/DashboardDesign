@@ -4,6 +4,13 @@ import { storage } from "./storage";
 import { insertShippingBarSettingsSchema, updateShippingBarSettingsSchema, defaultShippingBarSettings } from "@shared/schema";
 import { z } from "zod";
 import { WixAuthCredentials, syncSettingsWithWix } from "./wix-api-minimal";
+import { 
+  getOAuthUrl, 
+  exchangeCodeForTokens, 
+  getInstanceData, 
+  deployScript, 
+  getLastDayOfMonth 
+} from "./oauth-utils";
 
 // Middleware to validate Wix integration tokens
 function validateWixToken(req: Request, res: Response, next: NextFunction) {
@@ -140,8 +147,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               limit: Math.min(Number(limit), 100),
               offset: Number(offset)
             },
-            filter: filter ? JSON.parse(filter) : undefined,
-            sort: sort ? JSON.parse(sort) : undefined
+            filter: filter && typeof filter === 'string' ? (() => { try { return JSON.parse(filter); } catch { return undefined; } })() : undefined,
+            sort: sort && typeof sort === 'string' ? (() => { try { return JSON.parse(sort); } catch { return undefined; } })() : undefined
           }
         }, null, 2)
       });
@@ -154,8 +161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             limit: Math.min(Number(limit), 100),
             offset: Number(offset)
           },
-          filter: filter ? String(filter) : undefined,
-          sort: sort ? String(sort) : undefined
+          filter: filter && typeof filter === 'string' ? filter : undefined,
+          sort: sort && typeof sort === 'string' ? sort : undefined
         };
 
         console.log('[Wix Products API] Request body:', JSON.stringify(requestBody, null, 2));
@@ -173,8 +180,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 limit: Math.min(Number(limit), 100),
                 offset: Number(offset)
               },
-              filter: filter ? JSON.parse(filter) : undefined,
-              sort: sort ? JSON.parse(sort) : undefined
+              filter: filter ? (typeof filter === 'string' ? JSON.parse(filter) : undefined) : undefined,
+              sort: sort ? (typeof sort === 'string' ? JSON.parse(sort) : undefined) : undefined
             },
             returnTotalCount: false,
             consistentRead: false
@@ -201,8 +208,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }))
         });
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
         console.error('[Wix Products API] Error fetching products:', error);
-        return res.status(500).json({ message: "Failed to fetch products from Wix", error: error.message });
+        return res.status(500).json({ message: "Failed to fetch products from Wix", error: errorMessage });
       }
     } catch (error) {
       console.error("[Wix Products API] Error:", error);
@@ -210,8 +218,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("[Wix Products API] Full error details:", {
         message: errorMessage,
         stack: error instanceof Error ? error.stack : undefined,
-        instanceId,
-        hasAccessToken: !!accessToken
+        requestInstanceId: req.query.instanceId,
+        hasAuthorization: !!req.headers.authorization
       });
       return res.status(500).json({ message: "Failed to fetch products", error: errorMessage });
     }
@@ -222,8 +230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const allowedOrigins = [
       'https://manage.wix.com',
       'https://editor.wix.com',
-      'https://www.wix.com',
-      'https://tonyboom3d.wixsite.com'
+      'https://www.wix.com'
     ];
 
     const origin = req.headers.origin;
@@ -335,6 +342,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // === Wix Integration API Routes ===
+
+  // OAuth endpoints for Wix app installation
+  
+  // OAuth URL endpoint - redirects to Wix installer
+  app.get("/oauth/url", (req: Request, res: Response) => {
+    try {
+      const token = req.query.token as string;
+      if (!token) {
+        console.error("[OAuth] Invalid token info", token);
+        return res.status(400).json({ message: "Invalid token info" });
+      }
+      
+      // Set the redirect URL to our oauthRedirect endpoint
+      const REDIRECT_URL = `${req.protocol}://${req.get('host')}/oauth/redirect`;
+      
+      // Get the OAuth URL and redirect the user
+      const oauthUrl = getOAuthUrl(token, REDIRECT_URL);
+      return res.redirect(301, oauthUrl);
+    } catch (error) {
+      console.error("[OAuth] Error generating OAuth URL:", error);
+      return res.status(500).json({ message: "Failed to generate OAuth URL" });
+    }
+  });
+  
+  // OAuth redirect endpoint - handles callback from Wix
+  app.get("/oauth/redirect", async (req: Request, res: Response) => {
+    try {
+      const { code, instanceId } = req.query;
+      
+      if (!code || !instanceId) {
+        console.error("[OAuth] Missing required parameters:", { code, instanceId });
+        return res.status(400).json({ message: "Missing required parameters" });
+      }
+      
+      // Exchange code for access and refresh tokens
+      const { accessToken, refreshToken } = await exchangeCodeForTokens(
+        code as string, 
+        instanceId as string
+      );
+      
+      // Get instance data from Wix
+      const instanceData = await getInstanceData(accessToken);
+      
+      // Check if settings already exist for this instance
+      let existingSettings = await storage.getSettingsByInstanceId(instanceId as string);
+      
+      // Set up reset day for usage stats (similar to your original implementation)
+      const today = new Date();
+      const lastDayOfMonth = getLastDayOfMonth(today);
+      let resetDay = today.getDate();
+      
+      if (resetDay > lastDayOfMonth) {
+        resetDay = lastDayOfMonth;
+      }
+      
+      // Create or update settings in our local database
+      if (!existingSettings) {
+        // Create new settings
+        const newSettings = {
+          ...defaultShippingBarSettings,
+          instanceId: instanceId as string,
+          accessToken,
+          refreshToken,
+          enabled: true
+        };
+        
+        await storage.createSettings(newSettings);
+      } else {
+        // Update existing settings with new tokens
+        await storage.updateSettings({
+          instanceId: instanceId as string,
+          accessToken,
+          refreshToken,
+        });
+      }
+      
+      // Deploy script to Wix instance (optional, based on your requirements)
+      await deployScript(instanceId as string, accessToken, refreshToken);
+      
+      // Redirect to Wix dashboard with access token
+      return res.redirect(301, `https://www.wix.com/installer/close-window?access_token=${accessToken}`);
+    } catch (error) {
+      console.error("[OAuth] Failed OAuth flow:", error);
+      return res.status(500).json({ message: "OAuth authentication failed" });
+    }
+  });
 
   // Apply Wix token validation middleware to all Wix API routes
   const wixApiRouter = express.Router();
