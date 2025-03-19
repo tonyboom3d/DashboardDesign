@@ -24,18 +24,10 @@ export const ProductsCard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  // Add logging for search
-  const handleSearch = async (term: string) => {
-    console.log('[Products Search] Starting product search with query:', term);
+  // Handle search term change
+  const handleSearchTermChange = async (term: string) => {
+    console.log('[Products Search] Search term changed:', term);
     setSearchTerm(term);
-    setIsSearching(true);
-    try {
-      // Search logic here
-    } catch (error) {
-      console.error('[Products Search] Error searching products:', error);
-    } finally {
-      setIsSearching(false);
-    }
   };
 
   // Fetch products when component mounts

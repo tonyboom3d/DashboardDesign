@@ -61,26 +61,10 @@ app.use((req, res, next) => {
     }
 
     // Start the server immediately with port fallback
-    const startServer = (port: number, maxRetries = 3, retryCount = 0) => {
-      server.listen({
-        port,
-        host: "0.0.0.0",
-        reusePort: true,
-      }, () => {
-        log(`serving on port ${port}`);
-      }).on('error', (err: any) => {
-        if (err.code === 'EADDRINUSE' && retryCount < maxRetries) {
-          log(`Port ${port} is in use, trying ${port + 1}...`);
-          // Try the next port
-          startServer(port + 1, maxRetries, retryCount + 1);
-        } else {
-          console.error(`Failed to start server:`, err);
-        }
-      });
-    };
-    
-    // Start with default port 5000
-    startServer(5000);
+    app.listen(5000, '0.0.0.0', () => {
+      console.log('[express] serving on port 5000');
+    });
+
   } catch (error) {
     console.error("Server startup error:", error);
   }
