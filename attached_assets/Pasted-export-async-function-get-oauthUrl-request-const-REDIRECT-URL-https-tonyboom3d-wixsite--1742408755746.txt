@@ -1,0 +1,171 @@
+export async function get_oauthUrl(request) {
+    const REDIRECT_URL = "https://tonyboom3d.wixsite.com/freeshippingbar/_functions/oauthRedirect"
+    const token = request.query.token
+    if (!token) {
+        console.error("Invalid token info", token)
+        throw new Error("Invalid token info")
+    }
+    return response({ status: 301, headers: { Location: `https://www.wix.com/installer/install?token=${token}&appId=${APP_ID}&redirectUrl=${REDIRECT_URL}` } })
+}
+
+export async function get_oauthRedirect(request) {
+    const { code, instanceId } = request.query
+    const SECRET = await wixSecretsBackend.getSecret("appSecret")
+    if (!SECRET) {
+        console.error("Missing required secret: appSecret")
+        return serverError({
+            headers: { "Content-Type": "application/json" },
+            body: { error: "Server configuration error" }
+        })
+    }
+    const OAUTH_URL = "https://www.wixapis.com/oauth/access";
+    const DASHBOARD_URL = "https://www.wix.com/installer/close-window?access_token=";
+    try {
+        const existingSettings = await queryUserSettings(instanceId);
+        const oauthResponse = await wixFetch.fetch(
+            `${OAUTH_URL}?state=${instanceId}`, {
+                headers: { "Content-Type": "application/json" },
+                method: "POST",
+                body: JSON.stringify({
+                    grant_type: "authorization_code",
+                    client_id: APP_ID,
+                    client_secret: SECRET,
+                    code,
+                }),
+            }
+        );
+
+        const { access_token: accessToken, refresh_token: refreshToken } = await oauthResponse.json()
+        const instanceData = await wixFetch.fetch("https://www.wixapis.com/apps/v1/instance", { headers: { Authorization: `Bearer ${accessToken}` } }).then(res => res.json())
+
+        const today = new Date()
+        const lastDayOfMonth = getLastDayOfMonth(today)
+        let resetDay = today.getDate()
+
+        if (resetDay > lastDayOfMonth) { resetDay = lastDayOfMonth }
+
+        let item
+        if (existingSettings.items.length === 0) {
+            item = {
+                instanceId,
+                accessToken,
+                refreshToken,
+                enabled: true,
+                appPlan: 'Free',
+                ownerEmail: instanceData.site.ownerInfo.email || '',
+                siteUrl: instanceData.site.url,
+                totalUsage: 0,
+                usage: 0,
+                resetDay: resetDay.toString(),
+            };
+            await insertUserSettings(item)
+        } else {
+            item = existingSettings.items[0]
+            item.accessToken = accessToken
+            item.refreshToken = refreshToken
+            item.status = existingSettings.items[0].status === 'REMOVED' ? null : existingSettings.items[0].status
+            if (!item.resetDay) { item.resetDay = resetDay.toString() }
+            await updateUserSettings(item)
+        }
+        await deployScript(instanceId, accessToken, refreshToken)
+        return response({ status: 301, headers: { Location: `${DASHBOARD_URL}${accessToken}` } })
+    } catch (e) {
+        console.error("Failed oauth! ->", e);
+        throw e;
+    }
+}
+
+function getLastDayOfMonth(date) {
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1
+    return new Date(year, month, 0).getDate();
+}
+
+export async function deployScript(instanceId, accessToken, refreshToken) {
+    let response
+    try {
+        const data = JSON.stringify({
+            properties: {
+                parameters: {
+                    instanceId: instanceId,
+                },
+            },
+        })
+        response = await wixFetch.fetch("https://www.wixapis.com/apps/v1/scripts", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+            method: "POST",
+            body: data,
+        })
+
+        if (response.ok) {
+            console.log("Script deployed successfully")
+        } else {
+            const errorResponse = await response.text()
+            if (response.status === 401 || response.status === 403 || response.status === 400) {
+                const newAccessToken = await refreshAccessToken(refreshToken)
+                if (newAccessToken) {
+                    console.log("Retrying deployment with new access token")
+                    response = await wixFetch.fetch("https://www.wixapis.com/apps/v1/scripts", {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${newAccessToken}`,
+                        },
+                        method: "POST",
+                        body: data,
+                    })
+
+                    if (response.ok) {
+                        console.log("Script deployed successfully on retry")
+                    } else {
+                        const retryErrorResponse = await response.text()
+                        console.error("Retry deployment failed", response.status, response.statusText, 'Details:', retryErrorResponse)
+                    }
+                } else {
+                    console.error("Failed to refresh access token, cannot retry deployment.")
+                }
+            } else {
+                console.error("Failed to deploy embedded script, non-auth error:", response.status, response.statusText, 'Details:', errorResponse)
+            }
+        }
+    } catch (e) {
+        console.error("Error during deployment attempt:", e)
+    }
+}
+
+async function refreshAccessToken(refreshToken) {
+    const SECRET = await wixSecretsBackend.getSecret("appSecret")
+    if (!SECRET) {
+        console.error("Missing required secret: appSecret")
+        return serverError({
+            headers: { "Content-Type": "application/json" },
+            body: { error: "Server configuration error" }
+        })
+    }
+    const URL = "https://www.wixapis.com/oauth/access"
+    try {
+        const response = await wixFetch.fetch(URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                refresh_token: refreshToken,
+                client_id: APP_ID,
+                client_secret: SECRET,
+                grant_type: "refresh_token"
+            })
+        })
+
+        if (response.ok) {
+            const data = await response.json()
+            return data.access_token
+        } else {
+            console.error("Failed to refresh access token:", response.statusText)
+        }
+    } catch (e) {
+        console.error("Failed to refresh access token:", e)
+    }
+}
