@@ -354,8 +354,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid token info" });
       }
       
-      // Set the redirect URL to our oauthRedirect endpoint
-      const REDIRECT_URL = `${req.protocol}://${req.get('host')}/oauth/redirect`;
+      // Use the configured redirect URL
+      const REDIRECT_URL = "https://freeshipping-bar.replit.app/oauth/redirect";
       
       // Get the OAuth URL and redirect the user
       const oauthUrl = getOAuthUrl(token, REDIRECT_URL);

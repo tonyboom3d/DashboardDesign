@@ -9,6 +9,10 @@ const OAUTH_URL = "https://www.wixapis.com/oauth/access";
 const WIX_INSTALLER_URL = "https://www.wix.com/installer/install";
 const DASHBOARD_URL = "https://www.wix.com/installer/close-window?access_token=";
 
+// OAuth endpoints
+const OAUTH_REDIRECT_URL = "https://freeshipping-bar.replit.app/oauth/redirect";
+const OAUTH_URL_ENDPOINT = "https://freeshipping-bar.replit.app/oauth/url";
+
 // Ensure the app ID and secret are available
 function validateOAuthConfig(): void {
   if (!WIX_APP_ID || !WIX_APP_SECRET) {
