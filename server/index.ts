@@ -60,9 +60,10 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
 
-    // Start the server immediately with port fallback
-    app.listen(5000, '0.0.0.0', () => {
-      console.log('[express] serving on port 5000');
+    // Start the server immediately with port configuration
+    const port = process.env.PORT || 5001;
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`[express] serving on port ${port}`);
     });
 
   } catch (error) {
